@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Handler is Gin middleware to handle errors.
 func Handler(c *gin.Context) {
 	// Execute request handlers and then handle any errors
 	c.Next()

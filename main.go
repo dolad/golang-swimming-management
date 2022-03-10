@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"swimming-content-management/config"
 	database "swimming-content-management/data/database"
+	userStore "swimming-content-management/data/user"
+	userDomain "swimming-content-management/domain/userdomain"
 	router "swimming-content-management/router/http"
 )
 
@@ -19,7 +21,10 @@ func main() {
 		panic(err)
 	}
 
-	httpRouter := router.NewHTTPHandler()
+	userRepository := userStore.New(db)
+	userServices := userDomain.NewService(userRepository)
+
+	httpRouter := router.NewHTTPHandler(userServices)
 	err = http.ListenAndServe(":"+configuration.Port, httpRouter)
 	if err != nil {
 		panic(err)
