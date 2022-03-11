@@ -2,7 +2,6 @@ package users
 
 import (
 	"net/http"
-	domainErrors "swimming-content-management/domain"
 	userdomain "swimming-content-management/domain/userdomain"
 
 	"github.com/gin-gonic/gin"
@@ -14,8 +13,9 @@ func NewRoutesFactory(group *gin.RouterGroup) func(service userdomain.UserServic
 		group.POST("/signup", func(c *gin.Context) {
 			usersRequestPayload, err := Bind(c)
 			if err != nil {
-				appError := domainErrors.NewAppError(err, domainErrors.ValidationError)
-				c.Error(appError)
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": err.Error(),
+				})
 				return
 			}
 			newUser, err := service.SignUp(usersRequestPayload)

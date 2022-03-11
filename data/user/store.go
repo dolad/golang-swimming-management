@@ -27,7 +27,11 @@ func New(db *gorm.DB) *Store {
 }
 
 func (s *Store) SignUp(user *domain.User) (*domain.User, error) {
-	entity := toDbModel(user)
+	entity, err := toDbModel(user)
+	if err != nil {
+		appError := domainErrors.NewAppError(errors.Wrap(err, createError), domainErrors.RepositoryError)
+		return nil, appError
+	}
 	if err := s.db.Create(entity).Error; err != nil {
 		appError := domainErrors.NewAppError(errors.Wrap(err, createError), domainErrors.RepositoryError)
 		return nil, appError

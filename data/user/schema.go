@@ -2,37 +2,48 @@ package users
 
 import (
 	"time"
+
+	"github.com/jinzhu/gorm"
+	uuid "github.com/satori/go.uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // "github.com/jinzhu/gorm"
 // "github.com/pkg/errors"
 
 type User struct {
-	Id        int       `gorm:"primary_key;auto_increment" json:"id"`
-	Username  string    `gorm:"size:255;not null;unique" json:"username"`
-	Email     string    `gorm:"unique; not null" json:"email" `
-	Password  string    `json:"password" gorm:"not null"`
-	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	Id          uuid.UUID `gorm:"type:uuid;primary_key;" json:"id"`
+	Username    string    `gorm:"size:255;not null;index:unique" json:"username"`
+	Email       string    `gorm:"index:unique; not null" json:"email" `
+	Password    string    `json:"password" gorm:"not null"`
+	Surname     string    `json:"surname" gorm:"not null"`
+	FirstName   string    `json:"firstname" gorm:"not null"`
+	DateofBirth time.Time `json:"dateofbirth" gorm:"not null"`
+	PhoneNumber string    `json:"phonenumber" gorm:"not null"`
+	Address     string    `json:"address" gorm:"not null"`
+	PostCode    string    `json:"postcode gorm:not null"`
+	CreatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
-// func Hash(password string) ([]byte, error) {
-// 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-// }
+func Hash(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+
+	return string(hashedPassword), nil
+}
 
 // func VerifyPassword(hashedPassword, password string) error {
 // 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 // }
 
 // // before create hooks it runs before create functions
-// func (u *User) BeforeSave() error {
-// 	hashedPassword, err := Hash(u.Password)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	u.Password = string(hashedPassword)
-// 	return nil
-// }
+func (u *User) BeforeCreate(scope *gorm.Scope) error {
+	uuid := uuid.NewV4()
+	return scope.SetColumn("Id", uuid)
+}
 
 // func (u *User) Prepare() {
 // 	u.ID = 0

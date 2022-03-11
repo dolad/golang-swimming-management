@@ -1,13 +1,23 @@
 package users
 
-import "time"
+import (
+	"time"
+
+	uuid "github.com/satori/go.uuid"
+)
 
 type UserResponse struct {
-	Id        int       `json:"id"`
-	Username  string    `json:"username"`
-	Email     string    `json:"email"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	Id          uuid.UUID `json:"id"`
+	Username    string    `json:"username"`
+	Email       string    `json:"email"`
+	Surname     string    `json:"surname"`
+	FirstName   string    `json:"firstname"`
+	DateofBirth time.Time `json:"dateofbirth"`
+	PhoneNumber string    `json:"phonenumber"`
+	Address     string    `json:"address"`
+	PostCode    string    `json:"postcode"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 type ListUserResponse struct {
