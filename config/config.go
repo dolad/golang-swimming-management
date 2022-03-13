@@ -5,9 +5,14 @@ import (
 )
 
 type Config struct {
-	Environment string
-	Port        string
-	Database    *Database
+	Environment                string
+	Port                       string
+	Database                   *Database
+	RefreshTokenPrivateKeyPath string
+	AccessTokenPrivateKeyPath  string
+	AccessTokenPublicKeyPath   string
+	RefreshTokenPublicKeyPath  string
+	JwtExpiration              int
 }
 
 type Database struct {
@@ -35,6 +40,9 @@ func NewConfig() (*Config, error) {
 			DB:       env.MustGet("DATABASE_DB"),
 			Password: env.MustGet("DATABASE_PASSWORD"),
 		},
+		AccessTokenPrivateKeyPath: "./jwtcert/key.pem",
+		AccessTokenPublicKeyPath:  "./jwtcert/key.pem.pub",
+		JwtExpiration:             60,
 	}, nil
 
 }

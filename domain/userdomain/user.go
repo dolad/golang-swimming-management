@@ -20,3 +20,8 @@ type User struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
+
+type AuthPayload struct {
+	Token string
+	*User
+}

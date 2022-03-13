@@ -5,6 +5,8 @@ import (
 	userdomain "swimming-content-management/domain/userdomain"
 	errors "swimming-content-management/router/http/errors"
 	healthRoutes "swimming-content-management/router/http/health"
+	"swimming-content-management/router/http/middleware"
+	swimmerRoutes "swimming-content-management/router/http/swimmers-data"
 	usersRoutes "swimming-content-management/router/http/users"
 
 	"github.com/gin-contrib/cors"
@@ -29,9 +31,15 @@ func NewHTTPHandler(userServices userdomain.UserService) http.Handler {
 
 	// this will map and prefix all endpoint with api
 	api := router.Group("/api")
+	// authRoutes
+	authGroup := api.Group("/auth")
+	usersRoutes.NewAuthRoutesFactory(authGroup)(userServices)
 
-	usersGroup := api.Group("/auth")
-	usersRoutes.NewRoutesFactory(usersGroup)(userServices)
+	swimmerGroup := router.Group("/api/swimmers")
+	swimmerGroup.Use(middleware.MiddlewareValidAccessToken)
+	swimmerRoutes.NewRoutesFactory()(swimmerGroup)
+
+	// authGroup.Use(middleware.MiddlewareValidAccessToken)
 
 	// map routers
 

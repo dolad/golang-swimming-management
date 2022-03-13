@@ -11,20 +11,34 @@ func toDbModel(entity *domain.User) (*User, error) {
 		return nil, err
 	}
 	return &User{
-		Id:       entity.Id,
-		Email:    entity.Email,
-		Username: entity.Username,
-		Password: hashedPassword,
+
+		Id:          entity.Id,
+		Username:    entity.Username,
+		Email:       entity.Email,
+		Password:    hashedPassword,
+		CreatedAt:   entity.CreatedAt,
+		UpdatedAt:   entity.UpdatedAt,
+		Surname:     entity.Surname,
+		FirstName:   entity.FirstName,
+		DateofBirth: entity.DateofBirth,
+		PhoneNumber: entity.PhoneNumber,
+		Address:     entity.Address,
+		PostCode:    entity.PostCode,
 	}, nil
 }
 
 func toDomainModel(entity *User) *domain.User {
 	return &domain.User{
-		Id:        entity.Id,
-		Email:     entity.Email,
-		Username:  entity.Username,
-		Password:  entity.Password,
-		CreatedAt: entity.CreatedAt,
-		UpdatedAt: entity.UpdatedAt,
+		Id:          entity.Id,
+		Username:    entity.Username,
+		Email:       entity.Email,
+		CreatedAt:   entity.CreatedAt,
+		UpdatedAt:   entity.UpdatedAt,
+		Surname:     entity.Surname,
+		FirstName:   entity.FirstName,
+		DateofBirth: entity.DateofBirth,
+		PhoneNumber: entity.PhoneNumber,
+		Address:     entity.Address,
+		PostCode:    entity.PostCode,
 	}
 }
