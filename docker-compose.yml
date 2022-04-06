@@ -1,0 +1,24 @@
+version: '2.4'
+
+services:
+  postgres:
+    image: postgres:13
+    mem_limit: 600m
+    environment:
+      POSTGRES_PASSWORD: swimming123
+      POSTGRES_USER: swimming
+      POSTGRES_DB: swimming_db
+      PGDATA: '/var/lib/postgresql/data/pgdata'
+      POSTGRES_INITDB_WALDIR: '/var/lib/postgresql/data/waldata'
+    ports:
+     - 15432:5432
+     - 25432:5432
+    volumes:
+     - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'swimming']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  pgdata:
