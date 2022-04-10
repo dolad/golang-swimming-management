@@ -27,7 +27,7 @@ func toDbModel(entity *domain.User) (*User, error) {
 	}, nil
 }
 
-func toDomainModel(entity *User) *domain.User {
+func toDomainModel(entity *User, roleName string) *domain.User {
 	return &domain.User{
 		Id:          entity.Id,
 		Username:    entity.Username,
@@ -40,5 +40,7 @@ func toDomainModel(entity *User) *domain.User {
 		PhoneNumber: entity.PhoneNumber,
 		Address:     entity.Address,
 		PostCode:    entity.PostCode,
+		RoleID:      entity.RoleID,
+		RoleName:    roleName,
 	}
 }

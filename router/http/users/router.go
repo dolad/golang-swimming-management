@@ -21,13 +21,13 @@ func NewAuthRoutesFactory(group *gin.RouterGroup) func(service userdomain.UserSe
 			}
 			fmt.Println(usersRequestPayload)
 			newUser, err := service.SignUp(usersRequestPayload)
+
 			if err != nil {
 				c.JSON(http.StatusConflict, gin.H{
 					"error": err.Error(),
 				})
 				return
 			}
-
 			c.JSON(http.StatusOK, *toResponseModel(newUser))
 		})
 

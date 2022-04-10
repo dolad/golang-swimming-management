@@ -14,6 +14,9 @@ import {
   Typography
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { connect } from 'react-redux';
+import {registerAction} from "../redux/authenticated/action"
+
 
 const Register = () => {
   const router = useRouter();
@@ -22,8 +25,7 @@ const Register = () => {
       email: '',
       firstName: '',
       lastName: '',
-      password: '',
-      policy: false
+      password: ''
     },
     validationSchema: Yup.object({
       email: Yup
@@ -47,16 +49,12 @@ const Register = () => {
         .string()
         .max(255)
         .required(
-          'Password is required'),
-      policy: Yup
-        .boolean()
-        .oneOf(
-          [true],
-          'This field must be checked'
-        )
+          'Password is required')
+
     }),
-    onSubmit: () => {
-      router.push('/');
+    onSubmit: (values) => {
+      console.log("here");
+      // router.push('/dashboard');
     }
   });
 
@@ -77,17 +75,20 @@ const Register = () => {
         }}
       >
         <Container maxWidth="sm">
-          <NextLink
-            href="/"
-            passHref
+          <Box
+            sx={{
+              pb: 1,
+              pt: 3
+            }}
           >
-            <Button
-              component="a"
-              startIcon={<ArrowBackIcon fontSize="small" />}
+            <Typography
+              align="center"
+              color="textSecondary"
+              variant="h2"
             >
-              Dashboard
-            </Button>
-          </NextLink>
+              Swimming CMS
+            </Typography>
+          </Box>
           <form onSubmit={formik.handleSubmit}>
             <Box sx={{ my: 3 }}>
               <Typography
@@ -161,36 +162,8 @@ const Register = () => {
                 ml: -1
               }}
             >
-              <Checkbox
-                checked={formik.values.policy}
-                name="policy"
-                onChange={formik.handleChange}
-              />
-              <Typography
-                color="textSecondary"
-                variant="body2"
-              >
-                I have read the
-                {' '}
-                <NextLink
-                  href="#"
-                  passHref
-                >
-                  <Link
-                    color="primary"
-                    underline="always"
-                    variant="subtitle2"
-                  >
-                    Terms and Conditions
-                  </Link>
-                </NextLink>
-              </Typography>
             </Box>
-            {Boolean(formik.touched.policy && formik.errors.policy) && (
-              <FormHelperText error>
-                {formik.errors.policy}
-              </FormHelperText>
-            )}
+
             <Box sx={{ py: 2 }}>
               <Button
                 color="primary"
@@ -228,4 +201,6 @@ const Register = () => {
   );
 };
 
-export default Register;
+
+export default connect(null, {registerAction})(Register);
+

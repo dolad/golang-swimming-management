@@ -7,6 +7,7 @@ import (
 	userStore "swimming-content-management/data/user"
 	userDomain "swimming-content-management/domain/userdomain"
 	router "swimming-content-management/router/http"
+	"swimming-content-management/seed"
 )
 
 func main() {
@@ -20,11 +21,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
+	//seeder file
+	seed.Load(db)
 	userRepository := userStore.New(db)
 	userServices := userDomain.NewService(userRepository)
 
 	httpRouter := router.NewHTTPHandler(userServices)
+
 	err = http.ListenAndServe(":"+configuration.Port, httpRouter)
 	if err != nil {
 		panic(err)

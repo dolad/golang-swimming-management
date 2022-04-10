@@ -49,7 +49,6 @@ func GenerateAccessToken(user *userDomain.User) (string, error) {
 			Issuer:    "swimming-cms.auth",
 		},
 	}
-	fmt.Println(claims)
 	signBytes, err := ioutil.ReadFile(configuration.AccessTokenPrivateKeyPath)
 	if err != nil {
 		appError := domainErrors.NewAppError(errors.Wrap(err, TokenGeneratorError), domainErrors.RepositoryError)

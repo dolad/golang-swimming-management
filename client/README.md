@@ -71,7 +71,7 @@ material-kit-react
 		├── _document.js
 		├── account.js
 		├── customers.js
-		├── index.js
+		├── dashboard.js
 		├── login.js
 		├── products.js
 		├── register.js

@@ -19,6 +19,8 @@ type User struct {
 	PostCode    string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	RoleID      uint
+	RoleName    string
 }
 
 type AuthPayload struct {

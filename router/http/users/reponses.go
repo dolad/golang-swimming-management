@@ -16,6 +16,7 @@ type UserResponse struct {
 	PhoneNumber string    `json:"phonenumber"`
 	Address     string    `json:"address"`
 	PostCode    string    `json:"postcode"`
+	RoleName    string    `json:"roleName"`
 	CreatedAt   time.Time `json:"createdAt"`
 	UpdatedAt   time.Time `json:"updatedAt"`
 }

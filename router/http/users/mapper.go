@@ -5,6 +5,7 @@ import (
 )
 
 func toResponseModel(entity *userdomain.User) *UserResponse {
+
 	return &UserResponse{
 		Id:          entity.Id,
 		Username:    entity.Username,
@@ -17,6 +18,7 @@ func toResponseModel(entity *userdomain.User) *UserResponse {
 		PhoneNumber: entity.PhoneNumber,
 		Address:     entity.Address,
 		PostCode:    entity.PostCode,
+		RoleName:    entity.RoleName,
 	}
 }
 
