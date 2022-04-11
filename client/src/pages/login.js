@@ -9,12 +9,12 @@ import {loginAction} from "../redux/authenticated/action"
 
 
 
-const Login = () => {
+const Login = (props) => {
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
-      email: 'demo@devias.io',
-      password: 'Password123'
+      email: '',
+      password: ''
     },
     validationSchema: Yup.object({
       email: Yup
@@ -30,8 +30,13 @@ const Login = () => {
         .required(
           'Password is required')
     }),
-    onSubmit: () => {
-      // router.push('/dashboard');
+    onSubmit: async (values) => {
+      try {
+        const response = await props.loginAction(values);
+        router.push('/dashboard');
+      } catch (error) {
+        console.log(error.response.data); 
+      }
     }
   });
 

@@ -6,6 +6,7 @@ import (
 	"swimming-content-management/constants"
 	"swimming-content-management/data/permission"
 	"swimming-content-management/data/role"
+	users "swimming-content-management/data/user"
 )
 
 var permissions = []permission.Permission{
@@ -63,7 +64,7 @@ var roles = []role.Role{
 }
 
 func Load(db *gorm.DB) {
-	err := db.Debug().DropTableIfExists(&permission.Permission{}, &role.Role{}).Error
+	err := db.Debug().DropTableIfExists(&permission.Permission{}, &role.Role{}, &users.User{}).Error
 	if err != nil {
 		log.Fatalf("cannot drop table: %v", err)
 	}

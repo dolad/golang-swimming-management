@@ -3,7 +3,7 @@ import { getCookie, getFromLocalStorage } from '../utils/authHelper';
 const TOKEN = 'token';
 
 const requestServices = () => {
-  const baseUrl = 'http://localhost:5006/api/';
+  const baseUrl = 'http://localhost:5006';
 
   const configOption = {
     baseUrl,
@@ -14,7 +14,7 @@ const requestServices = () => {
   };
 
   let axiosInstance = axios.create(configOption);
-
+  console.log(axiosInstance.defaults.baseURL);
   axiosInstance.interceptors.request.use(async config =>{
   //  extract token from the localStorage and attached it to headers
     const token = getCookie(TOKEN);
@@ -26,4 +26,4 @@ const requestServices = () => {
 }
 
 
-export default requestServices
+export default requestServices()

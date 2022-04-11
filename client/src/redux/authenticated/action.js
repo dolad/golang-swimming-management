@@ -6,14 +6,22 @@ export const authActionType = {
 }
 
 export const registerAction = (userData) => async ( dispatch) => {
-  //call authServices
-  const authService = await authenticationService.register(userData);
-  console.log(authService);
-  return dispatch({ type: authActionType.REGISTER_USER })
+  try{
+    let formData = userData
+    formData.dateofbirth = new Date(userData.dateofbirth).toISOString();
+    await authenticationService.register(formData);
+    return dispatch({ type: authActionType.REGISTER_USER })
+  }catch (error) {
+    throw error
+  }
 }
 
 export const loginAction = (userData) => async (dispatch) => {
-  const authService = await authenticationService.login((userData));
-  console.log(authService);
-  return dispatch({type: authActionType.LOGIN_USER})
+  try {
+    const authService = await authenticationService.login((userData));
+    return dispatch({type: authActionType.LOGIN_USER}) 
+  } catch (error) {
+    throw error
+  }
+ 
 }

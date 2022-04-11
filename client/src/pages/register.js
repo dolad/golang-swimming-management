@@ -3,28 +3,55 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import moment from 'moment';
 import {
   Box,
   Button,
   Checkbox,
-  Container,
-  FormHelperText,
-  Link,
+  Container, FormControl,
+  FormHelperText, InputLabel,
+  Link, MenuItem, Select,
   TextField,
   Typography
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { connect } from 'react-redux';
 import {registerAction} from "../redux/authenticated/action"
+import { DatePicker, LocalizationProvider } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { makeStyles } from '@mui/styles';
 
+const useStyles = makeStyles(() => ({
+  textField: {
+    padding: 5,
+    marginBottom: 10,
+  },
+  passwordInput:{
+    marginBottom: 10,
+  },
+  dateInput:{
+    marginBottom: 10,
+  },
+  input: {
+    color: "white"
+  }
+}));
 
-const Register = () => {
+const Register = (props) => {
   const router = useRouter();
+  const classes = useStyles();
+
   const formik = useFormik({
     initialValues: {
       email: '',
-      firstName: '',
-      lastName: '',
+      username: '',
+      firstname: '',
+      surname: '',
+      phonenumber: '',
+      address: '',
+      postcode: '',
+      role: '',
+      dateofbirth:'',
       password: ''
     },
     validationSchema: Yup.object({
@@ -32,19 +59,38 @@ const Register = () => {
         .string()
         .email(
           'Must be a valid email')
-        .max(255)
+        .max(250)
         .required(
           'Email is required'),
-      firstName: Yup
+      username: Yup
         .string()
-        .max(255)
+        .max(250)
+        .required(
+          'username  is required'),
+      firstname: Yup
+        .string()
+        .max(250)
         .required(
           'First name is required'),
-      lastName: Yup
+      surname: Yup
         .string()
-        .max(255)
+        .max(250)
         .required(
-          'Last name is required'),
+          'Surname is required'),
+      phonenumber: Yup.string()
+                      .max(255)
+                      .required("Phone number is required")
+                      .matches('^(?:0|\\+?44)(?:\\d\\s?){9,10}$', "Invalid phone number"),
+      postcode: Yup.string()
+                      .max(255)
+                      .required("Invalid postcode"),
+      address: Yup.string()
+        .max(255)
+        .required('Address  is required'),
+      dateofbirth:Yup.date().required(),
+
+      role: Yup
+        .string().optional(),
       password: Yup
         .string()
         .max(255)
@@ -52,9 +98,15 @@ const Register = () => {
           'Password is required')
 
     }),
-    onSubmit: (values) => {
-      console.log("here");
-      // router.push('/dashboard');
+    onSubmit: async (values) => {
+      try {
+         await props.registerAction(values);
+         router.push('/login');
+      } catch (error) {
+        console.log(error.response.data); 
+      }
+     
+      
     }
   });
 
@@ -111,22 +163,35 @@ const Register = () => {
               helperText={formik.touched.firstName && formik.errors.firstName}
               label="First Name"
               margin="normal"
-              name="firstName"
+              name="firstname"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.firstName}
               variant="outlined"
             />
+
             <TextField
-              error={Boolean(formik.touched.lastName && formik.errors.lastName)}
+              error={Boolean(formik.touched.surname && formik.errors.surname)}
               fullWidth
-              helperText={formik.touched.lastName && formik.errors.lastName}
-              label="Last Name"
+              helperText={formik.touched.surname && formik.errors.surname}
+              label=" Surname"
               margin="normal"
-              name="lastName"
+              name="surname"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              value={formik.values.lastName}
+              value={formik.values.surname}
+              variant="outlined"
+            />
+            <TextField
+              error={Boolean(formik.touched.username && formik.errors.username)}
+              fullWidth
+              helperText={formik.touched.username && formik.errors.username}
+              label="Username"
+              margin="normal"
+              name="username"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.username}
               variant="outlined"
             />
             <TextField
@@ -143,6 +208,46 @@ const Register = () => {
               variant="outlined"
             />
             <TextField
+              inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+              error={Boolean(formik.touched.phonenumber && formik.errors.phonenumber)}
+              fullWidth
+              helperText={formik.touched.phonenumber && formik.errors.phonenumber}
+              label="Phone number"
+              margin="normal"
+              name="phonenumber"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.phonenumber}
+              variant="outlined"
+            />
+            <TextField
+              error={Boolean(formik.touched.address && formik.errors.address)}
+              fullWidth
+              helperText={formik.touched.address && formik.errors.address}
+              label="Address"
+              margin="normal"
+              name="address"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.address}
+              variant="outlined"
+            />
+            <TextField
+              error={Boolean(formik.touched.postcode && formik.errors.postcode)}
+              fullWidth
+              helperText={formik.touched.postcode && formik.errors.postcode}
+              label="postcode"
+              margin="normal"
+              name="postcode"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.postcode}
+              variant="outlined"
+            />
+
+
+
+            <TextField
               error={Boolean(formik.touched.password && formik.errors.password)}
               fullWidth
               helperText={formik.touched.password && formik.errors.password}
@@ -151,10 +256,41 @@ const Register = () => {
               name="password"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
+              className={classes.passwordInput}
               type="password"
               value={formik.values.password}
               variant="outlined"
             />
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">UserType</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={formik.values.role}
+                label="UserType"
+                name="role"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <MenuItem key={1} value={"Swimmer"}>Swimmer</MenuItem>
+                <MenuItem  key={2} value={"Parent"}>Parent</MenuItem>
+                <MenuItem  key={3} value={"Coach"}>Coach</MenuItem>
+                <MenuItem key={4} value={"Officials"}>Officials</MenuItem>
+              </Select>
+
+            </FormControl>
+
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+
+              <DatePicker
+                renderInput={(props) => <TextField {...props} />}
+                className={classes.dateInput}
+                label="Data of birth"
+                value={formik.values.dateofbirth}
+                onChange={ value => formik.setFieldValue('dateofbirth', value)}
+              />
+
+            </LocalizationProvider>
             <Box
               sx={{
                 alignItems: 'center',

@@ -8,4 +8,12 @@ module.exports = {
       },
     ]
   },
+  async rewrites(){
+    return [
+    {
+      source: "/api",
+      destination: "http://localhost:5006/api/",
+    },
+  ];
+  }
 }
