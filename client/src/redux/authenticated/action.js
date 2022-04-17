@@ -19,7 +19,8 @@ export const registerAction = (userData) => async ( dispatch) => {
 export const loginAction = (userData) => async (dispatch) => {
   try {
     const authService = await authenticationService.login((userData));
-    return dispatch({type: authActionType.LOGIN_USER}) 
+    authenticationService.authorizeUser(authService);
+    return dispatch({type: authActionType.LOGIN_USER, payload: authService});
   } catch (error) {
     throw error
   }

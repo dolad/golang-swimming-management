@@ -1,6 +1,8 @@
 package users
 
 import (
+	"log"
+	"swimming-content-management/data/role"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -21,7 +23,8 @@ type User struct {
 	PostCode    string    `json:"postcode gorm:not null"`
 	CreatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	RoleID      uint
+	RoleID      uint32
+	Role        role.Role
 }
 
 func Hash(password string) (string, error) {
@@ -32,7 +35,15 @@ func Hash(password string) (string, error) {
 	return string(hashedPassword), nil
 }
 
-// // before create hooks it runs before create functions
+func VerifyHash(oldPassword string, newPassword string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(oldPassword), []byte(newPassword))
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+	return true
+}
+
 func (u *User) BeforeCreate(scope *gorm.Scope) error {
 	uuid := uuid.NewV4()
 	return scope.SetColumn("Id", uuid)

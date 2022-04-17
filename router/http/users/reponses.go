@@ -1,6 +1,7 @@
 package users
 
 import (
+	"swimming-content-management/data/role"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -16,7 +17,7 @@ type UserResponse struct {
 	PhoneNumber string    `json:"phonenumber"`
 	Address     string    `json:"address"`
 	PostCode    string    `json:"postcode"`
-	RoleName    string    `json:"roleName"`
+	Role        role.Role `json:"role"`
 	CreatedAt   time.Time `json:"createdAt"`
 	UpdatedAt   time.Time `json:"updatedAt"`
 }
@@ -37,4 +38,5 @@ type AuthPayloadResponse struct {
 	CreatedAt   time.Time `json:"createdAt"`
 	UpdatedAt   time.Time `json:"updatedAt"`
 	Token       string    `json:"accessToken"`
+	Role        role.Role `json:"role"`
 }

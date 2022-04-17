@@ -1,6 +1,10 @@
 package userdomain
 
+import (
+	users "swimming-content-management/data/user"
+)
+
 type UserRepository interface {
-	SignUp(user *User) (*User, error)
-	Login(user *User) (*AuthPayload, error)
+	SignUp(user *users.User) (*users.User, error)
+	Login(user *users.User) (*users.AuthPayload, error)
 }

@@ -114,3 +114,13 @@ Dashboard.getLayout = (page) => (
 );
 
 export default Dashboard;
+
+
+export async function  getStaticProps(context) {
+  return {
+    props: {
+      protected: true,
+      userType: "admin"
+    }
+  }
+}

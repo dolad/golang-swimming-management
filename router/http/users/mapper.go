@@ -1,10 +1,10 @@
 package users
 
 import (
-	userdomain "swimming-content-management/domain/userdomain"
+	users "swimming-content-management/data/user"
 )
 
-func toResponseModel(entity *userdomain.User) *UserResponse {
+func toResponseModel(entity *users.User) *UserResponse {
 
 	return &UserResponse{
 		Id:          entity.Id,
@@ -18,11 +18,11 @@ func toResponseModel(entity *userdomain.User) *UserResponse {
 		PhoneNumber: entity.PhoneNumber,
 		Address:     entity.Address,
 		PostCode:    entity.PostCode,
-		RoleName:    entity.RoleName,
+		Role:        entity.Role,
 	}
 }
 
-func toAuthResponseModel(entity *userdomain.AuthPayload) *AuthPayloadResponse {
+func toAuthResponseModel(entity *users.AuthPayload) *AuthPayloadResponse {
 	return &AuthPayloadResponse{
 		Id:          entity.Id,
 		Username:    entity.Username,
@@ -35,6 +35,7 @@ func toAuthResponseModel(entity *userdomain.AuthPayload) *AuthPayloadResponse {
 		PhoneNumber: entity.PhoneNumber,
 		Address:     entity.Address,
 		PostCode:    entity.PostCode,
+		Role:        entity.Role,
 		Token:       entity.Token,
 	}
 }

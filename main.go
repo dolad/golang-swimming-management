@@ -4,7 +4,11 @@ import (
 	"net/http"
 	"swimming-content-management/config"
 	database "swimming-content-management/data/database"
+	permissionStore "swimming-content-management/data/permission"
+	roleStore "swimming-content-management/data/role"
 	userStore "swimming-content-management/data/user"
+	permissionDomain "swimming-content-management/domain/permission"
+	roleDomain "swimming-content-management/domain/role"
 	userDomain "swimming-content-management/domain/userdomain"
 	router "swimming-content-management/router/http"
 	"swimming-content-management/seed"
@@ -21,12 +25,23 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	//seeder file
+	seed.DropRoleAndPermissionTables(db)
 	seed.Load(db)
+	//user repo and routes
 	userRepository := userStore.New(db)
 	userServices := userDomain.NewService(userRepository)
 
-	httpRouter := router.NewHTTPHandler(userServices)
+	// permission repo and routes
+	permissionRepository := permissionStore.New(db)
+
+	permissionServices := permissionDomain.NewService(permissionRepository)
+
+	// role repo and routes
+	roleRepository := roleStore.New(db)
+	
+	roleServices := roleDomain.NewService(roleRepository)
+
+	httpRouter := router.NewHTTPHandler(userServices, permissionServices, roleServices)
 
 	err = http.ListenAndServe(":"+configuration.Port, httpRouter)
 	if err != nil {

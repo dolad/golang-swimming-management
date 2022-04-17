@@ -1,7 +1,6 @@
 package users
 
 import (
-	"fmt"
 	"net/http"
 	userdomain "swimming-content-management/domain/userdomain"
 
@@ -19,7 +18,7 @@ func NewAuthRoutesFactory(group *gin.RouterGroup) func(service userdomain.UserSe
 				})
 				return
 			}
-			fmt.Println(usersRequestPayload)
+
 			newUser, err := service.SignUp(usersRequestPayload)
 
 			if err != nil {
@@ -28,14 +27,15 @@ func NewAuthRoutesFactory(group *gin.RouterGroup) func(service userdomain.UserSe
 				})
 				return
 			}
-			c.JSON(http.StatusOK, *toResponseModel(newUser))
+			c.JSON(http.StatusOK, newUser)
 		})
 
 		group.POST("/login", func(c *gin.Context) {
-			loginRequestPayload, err := LoginRequestValidator(c)
-			if err != nil {
+
+			loginRequestPayload, errors := LoginRequestValidator(c)
+			if errors != "" {
 				c.JSON(http.StatusBadRequest, gin.H{
-					"error": err.Error(),
+					"error": errors,
 				})
 				return
 			}
@@ -46,7 +46,8 @@ func NewAuthRoutesFactory(group *gin.RouterGroup) func(service userdomain.UserSe
 				})
 				return
 			}
-			c.JSON(http.StatusOK, *toAuthResponseModel(authenticateUser))
+			c.JSON(http.StatusOK, authenticateUser)
+			return
 		})
 
 	}

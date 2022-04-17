@@ -14,7 +14,7 @@ const requestServices = () => {
   };
 
   let axiosInstance = axios.create(configOption);
-  console.log(axiosInstance.defaults.baseURL);
+  
   axiosInstance.interceptors.request.use(async config =>{
   //  extract token from the localStorage and attached it to headers
     const token = getCookie(TOKEN);

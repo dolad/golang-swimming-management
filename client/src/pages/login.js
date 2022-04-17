@@ -6,6 +6,8 @@ import { connect } from 'react-redux'
 import * as Yup from 'yup';
 import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import {loginAction} from "../redux/authenticated/action"
+import { errorMessageAlertMessage, successAlertMesssage } from '../utils/sweerAlert';
+
 
 
 
@@ -33,9 +35,12 @@ const Login = (props) => {
     onSubmit: async (values) => {
       try {
         const response = await props.loginAction(values);
+        console.log(response.status);
+        successAlertMesssage();
         router.push('/dashboard');
       } catch (error) {
-        console.log(error.response.data); 
+        errorMessageAlertMessage(error.response.data.error);
+        // console.log(error.response.data); 
       }
     }
   });
@@ -150,11 +155,10 @@ const Login = (props) => {
   );
 };
 
-// const mapDispatchToProps = (dispatch) => {
-//     return {
-//       addCount: bindActionCreators(, dispatch),
-//       startClock: bindActionCreators(startClock,dispatch)
-//     }
-// }
 
-export default connect(null, {loginAction})(Login);
+const mapStateToProps = (state) => {
+  return state.auth;
+}
+
+
+export default connect(mapStateToProps, {loginAction})(Login);

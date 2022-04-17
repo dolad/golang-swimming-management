@@ -1,6 +1,6 @@
 package permission
 
 type Permission struct {
-	ID   uint
+	ID   uint32
 	Name string
 }

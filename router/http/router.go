@@ -1,19 +1,22 @@
 package router
 
 import (
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"net/http"
+	permissionDomain "swimming-content-management/domain/permission"
+	roleDomain "swimming-content-management/domain/role"
 	userdomain "swimming-content-management/domain/userdomain"
 	errors "swimming-content-management/router/http/errors"
 	healthRoutes "swimming-content-management/router/http/health"
 	"swimming-content-management/router/http/middleware"
+	permissionRoutes "swimming-content-management/router/http/permissions"
+	roleRoutes "swimming-content-management/router/http/role"
 	swimmerRoutes "swimming-content-management/router/http/swimmers-data"
 	usersRoutes "swimming-content-management/router/http/users"
-
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 )
 
-func NewHTTPHandler(userServices userdomain.UserService) http.Handler {
+func NewHTTPHandler(userServices userdomain.UserService, permissionService permissionDomain.PermissionService, roleServices roleDomain.RoleServices) http.Handler {
 	router := gin.Default()
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
@@ -38,6 +41,14 @@ func NewHTTPHandler(userServices userdomain.UserService) http.Handler {
 	swimmerGroup := router.Group("/api/swimmers")
 	swimmerGroup.Use(middleware.MiddlewareValidAccessToken)
 	swimmerRoutes.NewRoutesFactory()(swimmerGroup)
+
+	permissionGroup := router.Group("/api/permissions")
+	permissionGroup.Use(middleware.MiddlewareValidAccessToken)
+	permissionRoutes.NewRoutesFactory(permissionGroup)(permissionService)
+
+	roleGroup := router.Group("/api/roles")
+	roleGroup.Use(middleware.MiddlewareValidAccessToken)
+	roleRoutes.NewRoutesFactory(roleGroup)(roleServices)
 
 	// authGroup.Use(middleware.MiddlewareValidAccessToken)
 

@@ -1,8 +1,10 @@
 package userdomain
 
+import users "swimming-content-management/data/user"
+
 type UserService interface {
-	SignUp(user *User) (*User, error)
-	Login(user *User) (*AuthPayload, error)
+	SignUp(user *users.User) (*users.User, error)
+	Login(user *users.User) (*users.AuthPayload, error)
 }
 
 // handles buisiness logic
@@ -10,11 +12,11 @@ type Service struct {
 	repository UserRepository
 }
 
-func (svc *Service) SignUp(user *User) (*User, error) {
+func (svc *Service) SignUp(user *users.User) (*users.User, error) {
 	return svc.repository.SignUp(user)
 }
 
-func (svc *Service) Login(user *User) (*AuthPayload, error) {
+func (svc *Service) Login(user *users.User) (*users.AuthPayload, error) {
 	return svc.repository.Login(user)
 }
 

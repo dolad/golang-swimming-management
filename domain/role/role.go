@@ -5,7 +5,7 @@ import (
 )
 
 type Role struct {
-	ID          uint
+	ID          uint32
 	Name        string
 	Permissions []*permission.Permission
 }

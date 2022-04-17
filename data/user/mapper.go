@@ -1,10 +1,6 @@
 package users
 
-import (
-	domain "swimming-content-management/domain/userdomain"
-)
-
-func toDbModel(entity *domain.User) (*User, error) {
+func toDbModel(entity *User) (*User, error) {
 
 	hashedPassword, err := Hash(entity.Password)
 	if err != nil {
@@ -24,11 +20,12 @@ func toDbModel(entity *domain.User) (*User, error) {
 		PhoneNumber: entity.PhoneNumber,
 		Address:     entity.Address,
 		PostCode:    entity.PostCode,
+		RoleID:      entity.RoleID,
 	}, nil
 }
 
-func toDomainModel(entity *User, roleName string) *domain.User {
-	return &domain.User{
+func toDomainModel(entity *User) *User {
+	return &User{
 		Id:          entity.Id,
 		Username:    entity.Username,
 		Email:       entity.Email,
@@ -41,6 +38,6 @@ func toDomainModel(entity *User, roleName string) *domain.User {
 		Address:     entity.Address,
 		PostCode:    entity.PostCode,
 		RoleID:      entity.RoleID,
-		RoleName:    roleName,
+		Role:        entity.Role,
 	}
 }

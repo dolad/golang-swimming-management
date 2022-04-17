@@ -7,11 +7,20 @@ import { ThemeProvider } from '@mui/material/styles';
 import { createEmotionCache } from '../utils/create-emotion-cache';
 import { theme } from '../theme';
 import {wrapper} from "../redux/store/store"
+import {UserContext} from '../components/user';
+import { useEffect, useState } from 'react';
+import React from 'react';
+import { useRouter } from 'next/router';
+
+
 const clientSideEmotionCache = createEmotionCache();
 
 const App = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+  
+  
 
+  
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (

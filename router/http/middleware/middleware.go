@@ -2,11 +2,10 @@ package middleware
 
 import (
 	"errors"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
-	authdomain "swimming-content-management/domain/authdomain"
-
-	"github.com/gin-gonic/gin"
+	authdomain "swimming-content-management/data/user"
 )
 
 func MiddlewareValidAccessToken(c *gin.Context) {
@@ -14,14 +13,14 @@ func MiddlewareValidAccessToken(c *gin.Context) {
 	token, err := extractToken(c)
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"Message": err.Error(),
 		})
 	}
 
 	userId, errr := authdomain.ValidateAccessToken(token)
 	if errr != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"Message": "invalid token",
 		})
 	}

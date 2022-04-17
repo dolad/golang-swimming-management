@@ -1,12 +1,10 @@
-package authdomain
+package users
 
 import (
 	"fmt"
 	"io/ioutil"
-
 	config "swimming-content-management/config"
 	domainErrors "swimming-content-management/domain"
-	userDomain "swimming-content-management/domain/userdomain"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -20,8 +18,8 @@ const (
 
 // Authenticate interface lists the methods that our authentication service should implement
 type Authenticate interface {
-	Authenticate(reqUser *userDomain.User, user *userDomain.User) bool
-	GenerateAccessToken(user *userDomain.User) (string error)
+	Authenticate(reqUser *User, user *User) bool
+	GenerateAccessToken(user *User) (string error)
 	ValidateAccessToken(token string) (string error)
 }
 
@@ -31,7 +29,7 @@ type AccessTokenCustomClaim struct {
 	jwt.StandardClaims
 }
 
-func GenerateAccessToken(user *userDomain.User) (string, error) {
+func GenerateAccessToken(user *User) (string, error) {
 	configuration, err := config.NewConfig()
 
 	if err != nil {
@@ -94,7 +92,6 @@ func ValidateAccessToken(tokenString string) (*uuid.UUID, error) {
 		fmt.Println(err)
 		return nil, err
 	}
-	fmt.Println(token)
 	claims, ok := token.Claims.(*AccessTokenCustomClaim)
 
 	if !ok || !token.Valid || claims.KeyType != "access" {
