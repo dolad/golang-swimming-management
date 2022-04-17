@@ -30,7 +30,7 @@ type AuthPayload struct {
 // New creates a new Store struct
 func New(db *gorm.DB) *Store {
 	// migrate schema
-	db.AutoMigrate(&User{})
+	db.AutoMigrate(&User{}, &SwimmingData{})
 
 	return &Store{
 		db: db,
@@ -59,9 +59,8 @@ func (s *Store) SignUp(user *User) (*User, error) {
 		return nil, errors.New(UserNameEmailExistError)
 	}
 
-	//check if role exist
-
-	if err := tx.Create(&entity).Error; err != nil {
+	//skip the creation of swimming data when creating user
+	if err := tx.Omit("SwimmingData").Create(&entity).Error; err != nil {
 		return nil, errors.New(createError)
 	}
 

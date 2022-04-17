@@ -6,7 +6,8 @@ import (
 	"net/http"
 	permissionDomain "swimming-content-management/domain/permission"
 	roleDomain "swimming-content-management/domain/role"
-	userdomain "swimming-content-management/domain/userdomain"
+	"swimming-content-management/domain/swimmingdata"
+	"swimming-content-management/domain/userdomain"
 	errors "swimming-content-management/router/http/errors"
 	healthRoutes "swimming-content-management/router/http/health"
 	"swimming-content-management/router/http/middleware"
@@ -16,7 +17,7 @@ import (
 	usersRoutes "swimming-content-management/router/http/users"
 )
 
-func NewHTTPHandler(userServices userdomain.UserService, permissionService permissionDomain.PermissionService, roleServices roleDomain.RoleServices) http.Handler {
+func NewHTTPHandler(userServices userdomain.UserService, permissionService permissionDomain.PermissionService, roleServices roleDomain.RoleServices, swimmingService swimmingdata.SwimmingDataService) http.Handler {
 	router := gin.Default()
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
@@ -38,9 +39,9 @@ func NewHTTPHandler(userServices userdomain.UserService, permissionService permi
 	authGroup := api.Group("/auth")
 	usersRoutes.NewAuthRoutesFactory(authGroup)(userServices)
 
-	swimmerGroup := router.Group("/api/swimmers")
+	swimmerGroup := router.Group("/api/swimming-data")
 	swimmerGroup.Use(middleware.MiddlewareValidAccessToken)
-	swimmerRoutes.NewRoutesFactory()(swimmerGroup)
+	swimmerRoutes.NewRoutesFactory(swimmerGroup)(swimmingService)
 
 	permissionGroup := router.Group("/api/permissions")
 	permissionGroup.Use(middleware.MiddlewareValidAccessToken)

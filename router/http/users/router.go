@@ -28,6 +28,7 @@ func NewAuthRoutesFactory(group *gin.RouterGroup) func(service userdomain.UserSe
 				return
 			}
 			c.JSON(http.StatusOK, newUser)
+			return
 		})
 
 		group.POST("/login", func(c *gin.Context) {

@@ -6,9 +6,11 @@ import (
 	database "swimming-content-management/data/database"
 	permissionStore "swimming-content-management/data/permission"
 	roleStore "swimming-content-management/data/role"
+	swimmingDataStore "swimming-content-management/data/swimming-data"
 	userStore "swimming-content-management/data/user"
 	permissionDomain "swimming-content-management/domain/permission"
 	roleDomain "swimming-content-management/domain/role"
+	swimmingDomain "swimming-content-management/domain/swimmingdata"
 	userDomain "swimming-content-management/domain/userdomain"
 	router "swimming-content-management/router/http"
 	"swimming-content-management/seed"
@@ -38,10 +40,13 @@ func main() {
 
 	// role repo and routes
 	roleRepository := roleStore.New(db)
-	
 	roleServices := roleDomain.NewService(roleRepository)
 
-	httpRouter := router.NewHTTPHandler(userServices, permissionServices, roleServices)
+	//swimmingData
+	swimmingRepository := swimmingDataStore.New(db)
+	swimmingServices := swimmingDomain.NewService(swimmingRepository)
+
+	httpRouter := router.NewHTTPHandler(userServices, permissionServices, roleServices, swimmingServices)
 
 	err = http.ListenAndServe(":"+configuration.Port, httpRouter)
 	if err != nil {
