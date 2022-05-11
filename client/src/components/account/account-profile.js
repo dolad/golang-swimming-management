@@ -9,6 +9,9 @@ import {
   Typography
 } from '@mui/material';
 
+import {getSwimmerProfileAction} from "../../redux/users/actions"
+import { connect } from 'react-redux';
+
 const user = {
   avatar: '/static/images/avatars/avatar_6.png',
   city: 'Los Angeles',
@@ -18,8 +21,13 @@ const user = {
   timezone: 'GTM-7'
 };
 
-export const AccountProfile = (props) => (
-  <Card {...props}>
+const AccountProfile = (props) => {
+  
+  const {swimmerProfile} = props
+  
+
+  return (
+  <Card >
     <CardContent>
       <Box
         sx={{
@@ -29,7 +37,7 @@ export const AccountProfile = (props) => (
         }}
       >
         <Avatar
-          src={user.avatar}
+          src={'/static/images/avatars/avatar_6.png'}
           sx={{
             height: 64,
             mb: 2,
@@ -41,31 +49,29 @@ export const AccountProfile = (props) => (
           gutterBottom
           variant="h5"
         >
-          {user.name}
+          { `${swimmerProfile?.surname} ${swimmerProfile?.firstname}` } 
         </Typography>
         <Typography
           color="textSecondary"
           variant="body2"
         >
-          {`${user.city} ${user.country}`}
+          {`${swimmerProfile?.state} ${swimmerProfile?.country}`}
         </Typography>
         <Typography
           color="textSecondary"
           variant="body2"
         >
-          {user.timezone}
+          {swimmerProfile?.role?.name}
         </Typography>
       </Box>
     </CardContent>
     <Divider />
-    <CardActions>
-      <Button
-        color="primary"
-        fullWidth
-        variant="text"
-      >
-        Upload picture
-      </Button>
-    </CardActions>
   </Card>
-);
+)
+};
+
+const mapStateToProps = (state) => {
+  return state.users;
+}
+
+export default connect(mapStateToProps, {getSwimmerProfileAction})(AccountProfile)

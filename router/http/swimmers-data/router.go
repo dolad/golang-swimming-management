@@ -7,16 +7,6 @@ import (
 	"swimming-content-management/domain/swimmingdata"
 )
 
-//func NewRoutesFactory() func(group *gin.RouterGroup) {
-//	swimmerRouteFactory := func(group *gin.RouterGroup) {
-//		group.GET("", func(c *gin.Context) {
-//
-//		})
-//	}
-//
-//	return swimmerRouteFactory
-//}
-
 func NewRoutesFactory(group *gin.RouterGroup) func(service swimmingdata.SwimmingDataService) {
 	roleRouteFactory := func(service swimmingdata.SwimmingDataService) {
 		group.POST("", func(c *gin.Context) {
@@ -31,7 +21,17 @@ func NewRoutesFactory(group *gin.RouterGroup) func(service swimmingdata.Swimming
 			if err != nil {
 				c.JSON(http.StatusBadRequest, err)
 			}
+
 			c.JSON(http.StatusOK, response)
+			return
+		})
+
+		group.GET("", func(c *gin.Context) {
+			result, err := service.GetUserSwimmingData()
+			if err != nil {
+				c.JSON(http.StatusNotFound, err)
+			}
+			c.JSON(http.StatusOK, result)
 			return
 		})
 

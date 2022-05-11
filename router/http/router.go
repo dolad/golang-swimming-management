@@ -6,6 +6,7 @@ import (
 	"net/http"
 	permissionDomain "swimming-content-management/domain/permission"
 	roleDomain "swimming-content-management/domain/role"
+	"swimming-content-management/domain/squad"
 	"swimming-content-management/domain/swimmingdata"
 	"swimming-content-management/domain/userdomain"
 	errors "swimming-content-management/router/http/errors"
@@ -13,11 +14,12 @@ import (
 	"swimming-content-management/router/http/middleware"
 	permissionRoutes "swimming-content-management/router/http/permissions"
 	roleRoutes "swimming-content-management/router/http/role"
+	squadRoutes "swimming-content-management/router/http/squad"
 	swimmerRoutes "swimming-content-management/router/http/swimmers-data"
 	usersRoutes "swimming-content-management/router/http/users"
 )
 
-func NewHTTPHandler(userServices userdomain.UserService, permissionService permissionDomain.PermissionService, roleServices roleDomain.RoleServices, swimmingService swimmingdata.SwimmingDataService) http.Handler {
+func NewHTTPHandler(userServices userdomain.UserService, permissionService permissionDomain.PermissionService, roleServices roleDomain.RoleServices, swimmingService swimmingdata.SwimmingDataService, squadService squad.SquadDataService) http.Handler {
 	router := gin.Default()
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
@@ -39,6 +41,10 @@ func NewHTTPHandler(userServices userdomain.UserService, permissionService permi
 	authGroup := api.Group("/auth")
 	usersRoutes.NewAuthRoutesFactory(authGroup)(userServices)
 
+	usersGroup := api.Group("/users")
+	usersGroup.Use(middleware.MiddlewareValidAccessToken)
+	usersRoutes.NewUserRoutesFactory(usersGroup)(userServices)
+
 	swimmerGroup := router.Group("/api/swimming-data")
 	swimmerGroup.Use(middleware.MiddlewareValidAccessToken)
 	swimmerRoutes.NewRoutesFactory(swimmerGroup)(swimmingService)
@@ -51,6 +57,9 @@ func NewHTTPHandler(userServices userdomain.UserService, permissionService permi
 	roleGroup.Use(middleware.MiddlewareValidAccessToken)
 	roleRoutes.NewRoutesFactory(roleGroup)(roleServices)
 
+	squadGroup := router.Group("/api/squad")
+	squadGroup.Use(middleware.MiddlewareValidAccessToken)
+	squadRoutes.NewRoutesFactory(squadGroup)(squadService)
 	// authGroup.Use(middleware.MiddlewareValidAccessToken)
 
 	// map routers

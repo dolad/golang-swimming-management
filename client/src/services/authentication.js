@@ -19,6 +19,7 @@ const authorizeUser = async(data) => {
   setCookie(TOKEN, data.accessToken);
 }
 
+
 export default  {
   login,
   register,

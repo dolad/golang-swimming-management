@@ -4,10 +4,10 @@ import (
 	users "swimming-content-management/data/user"
 )
 
-func toResponseModel(entity *users.User) *UserResponse {
+func ToResponseModel(entity *users.User) *UserResponse {
 
 	return &UserResponse{
-		Id:          entity.Id,
+		Id:          entity.ID,
 		Username:    entity.Username,
 		Email:       entity.Email,
 		CreatedAt:   entity.CreatedAt,
@@ -17,6 +17,8 @@ func toResponseModel(entity *users.User) *UserResponse {
 		DateofBirth: entity.DateofBirth,
 		PhoneNumber: entity.PhoneNumber,
 		Address:     entity.Address,
+		Country:     entity.Country,
+		State:       entity.State,
 		PostCode:    entity.PostCode,
 		Role:        entity.Role,
 	}
@@ -24,7 +26,7 @@ func toResponseModel(entity *users.User) *UserResponse {
 
 func toAuthResponseModel(entity *users.AuthPayload) *AuthPayloadResponse {
 	return &AuthPayloadResponse{
-		Id:          entity.Id,
+		Id:          entity.ID,
 		Username:    entity.Username,
 		Email:       entity.Email,
 		CreatedAt:   entity.CreatedAt,
@@ -36,6 +38,7 @@ func toAuthResponseModel(entity *users.AuthPayload) *AuthPayloadResponse {
 		Address:     entity.Address,
 		PostCode:    entity.PostCode,
 		Role:        entity.Role,
+		RoleID:      entity.RoleID,
 		Token:       entity.Token,
 	}
 }

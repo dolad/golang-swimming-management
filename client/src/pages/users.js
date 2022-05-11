@@ -1,11 +1,26 @@
 import Head from 'next/head';
 import { Box, Container } from '@mui/material';
-import { CustomerListResults } from '../components/customer/customer-list-results';
+import UserListResult from '../components/customer/users-list-results';
 import { CustomerListToolbar } from '../components/customer/customer-list-toolbar';
 import { DashboardLayout } from '../components/dashboard-layout';
-import { customers } from '../__mocks__/customers';
+import { connect } from 'react-redux'
+import {getUserActions} from '../redux/users/actions'
+import { useEffect, useState } from 'react';
 
-const Customers = () => (
+const Users = (props) => {
+  const {getUserActions} = props;
+
+  const getUserList = async () => {
+   const response = await getUserActions();
+   return response.data;
+  }
+
+  useEffect(
+    () => {
+      getUserList();
+  }, [])
+  
+  return(
   <>
     <Head>
       <title>
@@ -22,16 +37,19 @@ const Customers = () => (
       <Container maxWidth={false}>
         <CustomerListToolbar />
         <Box sx={{ mt: 3 }}>
-          <CustomerListResults customers={customers} />
+            <UserListResult />
         </Box>
       </Container>
     </Box>
   </>
-);
-Customers.getLayout = (page) => (
+)
+};
+
+Users.getLayout = (page) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>
 );
 
-export default Customers;
+export default connect( null, {getUserActions})(Users);
+

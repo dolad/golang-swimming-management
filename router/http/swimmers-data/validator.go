@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	uuid "github.com/satori/go.uuid"
 	"strings"
 	swimming_data "swimming-content-management/data/swimming-data"
 )
@@ -13,11 +14,12 @@ type fieldError struct {
 }
 
 type SwimmerDataValidator struct {
-	TotalDistanceCovered uint32 `json:"total_distance_covered" binding:"required"`
-	StrokeCount          uint32 `json:"stroke_count"`
-	HeartRate            uint32 `json:"heart_rate" binding:"required"`
-	TimeTakenInSeconds   uint32 `json:"time_taken_in_seconds" binding:"required"`
-	SwimmingType         string `json:"swimming_type" binding:"required" `
+	TotalDistanceCovered uint32    `json:"total_distance_covered" binding:"required"`
+	StrokeCount          uint32    `json:"stroke_count" binding:"required"`
+	HeartRate            uint32    `json:"heart_rate" binding:"required"`
+	TimeTakenInSeconds   uint32    `json:"time_taken_in_seconds" binding:"required"`
+	SwimmingType         string    `json:"swimming_type" binding:"required" `
+	UserID               uuid.UUID `json:"user_id" binding:"required"`
 }
 
 func Bind(c *gin.Context) (*swimming_data.SwimmingData, error) {
@@ -31,8 +33,8 @@ func Bind(c *gin.Context) (*swimming_data.SwimmingData, error) {
 		HeartRate:            json.HeartRate,
 		TimeTakenInSeconds:   json.TimeTakenInSeconds,
 		SwimmingType:         json.SwimmingType,
+		UserID:               json.UserID,
 	}
-
 	return newUser, nil
 }
 

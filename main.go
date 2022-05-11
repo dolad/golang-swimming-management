@@ -6,14 +6,15 @@ import (
 	database "swimming-content-management/data/database"
 	permissionStore "swimming-content-management/data/permission"
 	roleStore "swimming-content-management/data/role"
+	squadDataStore "swimming-content-management/data/squad"
 	swimmingDataStore "swimming-content-management/data/swimming-data"
 	userStore "swimming-content-management/data/user"
 	permissionDomain "swimming-content-management/domain/permission"
 	roleDomain "swimming-content-management/domain/role"
+	squadDomain "swimming-content-management/domain/squad"
 	swimmingDomain "swimming-content-management/domain/swimmingdata"
 	userDomain "swimming-content-management/domain/userdomain"
 	router "swimming-content-management/router/http"
-	"swimming-content-management/seed"
 )
 
 func main() {
@@ -27,8 +28,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	seed.DropRoleAndPermissionTables(db)
-	seed.Load(db)
+	//seed.DropAllTables(db)
+	//seed.Load(db)
 	//user repo and routes
 	userRepository := userStore.New(db)
 	userServices := userDomain.NewService(userRepository)
@@ -46,7 +47,10 @@ func main() {
 	swimmingRepository := swimmingDataStore.New(db)
 	swimmingServices := swimmingDomain.NewService(swimmingRepository)
 
-	httpRouter := router.NewHTTPHandler(userServices, permissionServices, roleServices, swimmingServices)
+	//squad
+	squadRepository := squadDataStore.New(db)
+	squadService := squadDomain.NewService(squadRepository)
+	httpRouter := router.NewHTTPHandler(userServices, permissionServices, roleServices, swimmingServices, squadService)
 
 	err = http.ListenAndServe(":"+configuration.Port, httpRouter)
 	if err != nil {

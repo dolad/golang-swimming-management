@@ -2,7 +2,7 @@ import { authActionType } from './action';
 
 const authenticatedState = {
   isSuccessfull: false,
-  userData: {}
+  userData: []
 }
 
 export default function reducer(state = authenticatedState, action) {

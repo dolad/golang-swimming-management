@@ -4,6 +4,9 @@ import thunkMiddleware from 'redux-thunk'
 import count from '../count/reducer'
 import tick from '../tick/reducer'
 import auth from '../authenticated/reducer'
+import users from '../users/reducer'
+import swimmingdata from '../swimming-data/reducer'
+import squad from '../squad/reducer'
 
 const bindMiddleware = (middleware) => {
   if (process.env.NODE_ENV !== 'production') {
@@ -17,6 +20,9 @@ const combinedReducer = combineReducers({
   count,
   tick,
   auth,
+  users,
+  swimmingdata,
+  squad,
 })
 
 const reducer = (state, action) => {

@@ -6,6 +6,8 @@ import (
 	"swimming-content-management/constants"
 	"swimming-content-management/data/permission"
 	"swimming-content-management/data/role"
+	swimming_data "swimming-content-management/data/swimming-data"
+	users "swimming-content-management/data/user"
 )
 
 var permissions = []permission.Permission{
@@ -64,7 +66,7 @@ var roles = []role.Role{
 
 func Load(db *gorm.DB) {
 
-	err := db.Debug().AutoMigrate(&role.Role{}, &permission.Permission{}).Error
+	err := db.Debug().AutoMigrate(&role.Role{}, &permission.Permission{}, &users.User{}, &swimming_data.SwimmingData{}).Error
 	if err != nil {
 		log.Fatalf("cannot migrate table: %v", err)
 	}
@@ -76,8 +78,7 @@ func Load(db *gorm.DB) {
 		}
 		db.Debug().Create(&roles[i])
 		db.Model(&roles[i]).Association("Permissions").Append(&permissions[i])
-		//roles[i].Permissions = []*permission.Permission{&permissions[i]}
-		//err = db.Debug().Model(&role.Role{}).Create(&roles[i]).Error
+
 		if err != nil {
 			log.Fatalf("cannot seed role table %v", err)
 		}
@@ -86,10 +87,10 @@ func Load(db *gorm.DB) {
 
 }
 
-func DropRoleAndPermissionTables(db *gorm.DB) {
+func DropAllTables(db *gorm.DB) {
 	//db.Table("role_permissions").RemoveForeignKey("role_id", "roles(id)")
 	//db.Table("role_permissions").RemoveForeignKey("permission_id", "permissions(id)")
-	err := db.Debug().DropTableIfExists(&permission.Permission{}, &role.Role{}).Error
+	err := db.Debug().DropTableIfExists(&permission.Permission{}, &role.Role{}, &users.User{}, &swimming_data.SwimmingData{}).Error
 	if err != nil {
 		log.Fatalf("cannot drop table: %v", err)
 	}

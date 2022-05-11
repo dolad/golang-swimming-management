@@ -17,6 +17,8 @@ type UserResponse struct {
 	PhoneNumber string    `json:"phonenumber"`
 	Address     string    `json:"address"`
 	PostCode    string    `json:"postcode"`
+	Country     string    `json:"country"`
+	State       string    `json:"state"`
 	Role        role.Role `json:"role"`
 	CreatedAt   time.Time `json:"createdAt"`
 	UpdatedAt   time.Time `json:"updatedAt"`
@@ -39,4 +41,5 @@ type AuthPayloadResponse struct {
 	UpdatedAt   time.Time `json:"updatedAt"`
 	Token       string    `json:"accessToken"`
 	Role        role.Role `json:"role"`
+	RoleID      uint32    `json:"role_id"`
 }

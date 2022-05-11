@@ -2,6 +2,10 @@ import { useState } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
+import { connect } from 'react-redux';
+import {getUserActions} from '../../redux/users/actions'
+
+
 import {
   Avatar,
   Box,
@@ -17,41 +21,43 @@ import {
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
-export const CustomerListResults = ({ customers, ...rest }) => {
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
+const UserListResult = (props) => {
+
+  const {usersList : users} = props;
+  const [selectedUserId, setselectedUserId] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
   const handleSelectAll = (event) => {
-    let newSelectedCustomerIds;
+    let newselectedUserId;
 
     if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
+      newselectedUserId = users?.map((user) => user.id);
     } else {
-      newSelectedCustomerIds = [];
+      newselectedUserId = [];
     }
 
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    setselectedUserId(newselectedUserId);
   };
 
   const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedCustomerIds.indexOf(id);
-    let newSelectedCustomerIds = [];
+    const selectedIndex = selectedUserId.indexOf(id);
+    let newselectedUserId = [];
 
     if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
+      newselectedUserId = newselectedUserId.concat(selectedUserId, id);
     } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
-    } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
+      newselectedUserId = newselectedUserId.concat(selectedUserId.slice(1));
+    } else if (selectedIndex === selectedUserId.length - 1) {
+      newselectedUserId = newselectedUserId.concat(selectedUserId.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, selectedIndex),
-        selectedCustomerIds.slice(selectedIndex + 1)
+      newselectedUserId = newselectedUserId.concat(
+        selectedUserId.slice(0, selectedIndex),
+        selectedUserId.slice(selectedIndex + 1)
       );
     }
 
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    setselectedUserId(newselectedUserId);
   };
 
   const handleLimitChange = (event) => {
@@ -63,7 +69,7 @@ export const CustomerListResults = ({ customers, ...rest }) => {
   };
 
   return (
-    <Card {...rest}>
+    <Card >
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>
           <Table>
@@ -71,11 +77,11 @@ export const CustomerListResults = ({ customers, ...rest }) => {
               <TableRow>
                 <TableCell padding="checkbox">
                   <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
+                    checked={selectedUserId.length === users?.length}
                     color="primary"
                     indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < customers.length
+                      selectedUserId.length > 0
+                      && selectedUserId.length < users?.length
                     }
                     onChange={handleSelectAll}
                   />
@@ -93,21 +99,28 @@ export const CustomerListResults = ({ customers, ...rest }) => {
                   Phone
                 </TableCell>
                 <TableCell>
+                  Date of birth
+                </TableCell>
+                <TableCell>
+                  Role
+                </TableCell>
+                <TableCell>
                   Registration date
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+
+              {users && users.length > 0 && users?.slice(0, limit).map((user) => (
                 <TableRow
                   hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                  key={user.id}
+                  selected={selectedUserId.indexOf(user.id) !== -1}
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
+                      checked={selectedUserId.indexOf(user.id) !== -1}
+                      onChange={(event) => handleSelectOne(event, user.id)}
                       value="true"
                     />
                   </TableCell>
@@ -119,30 +132,36 @@ export const CustomerListResults = ({ customers, ...rest }) => {
                       }}
                     >
                       <Avatar
-                        src={customer.avatarUrl}
+                        src={'/static/images/avatars/avatar_3.png'}
                         sx={{ mr: 2 }}
                       >
-                        {getInitials(customer.name)}
+                        {getInitials(user.surname)}
                       </Avatar>
                       <Typography
                         color="textPrimary"
                         variant="body1"
                       >
-                        {customer.name}
+                        {user.username}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    {customer.email}
+                    {user.email}
                   </TableCell>
                   <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
+                    {`${user.postcode}, ${user.address}`}
                   </TableCell>
                   <TableCell>
-                    {customer.phone}
+                    {user.phonenumber}
                   </TableCell>
                   <TableCell>
-                    {format(customer.createdAt, 'dd/MM/yyyy')}
+                    {format( Date.parse(user.dateofbirth), 'dd/MM/yyyy')}
+                  </TableCell>
+                  <TableCell>
+                    {user.Role.name}
+                  </TableCell>
+                  <TableCell>
+                    {format( Date.parse(user.created_at), 'dd/MM/yyyy')}
                   </TableCell>
                 </TableRow>
               ))}
@@ -152,7 +171,7 @@ export const CustomerListResults = ({ customers, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={customers.length}
+        count={users?.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
@@ -163,6 +182,10 @@ export const CustomerListResults = ({ customers, ...rest }) => {
   );
 };
 
-CustomerListResults.propTypes = {
-  customers: PropTypes.array.isRequired
-};
+
+const mapStateToProps = (state) => {
+  console.log(state.users);
+  return state.users
+}
+export default connect(mapStateToProps, null)(UserListResult);
+

@@ -1,10 +1,30 @@
 import Head from 'next/head';
 import { Box, Container, Grid, Typography } from '@mui/material';
-import { AccountProfile } from '../components/account/account-profile';
-import { AccountProfileDetails } from '../components/account/account-profile-details';
-import { DashboardLayout } from '../components/dashboard-layout';
+import  AccountProfile from '../components/account/account-profile';
+import  SwimmerProfileDetails  from '../components/account/swimmer-account-details';
 
-const Account = () => (
+import  SwimmingDataForm  from '../components/account/swimming-data-form';
+
+import { DashboardLayout } from '../components/dashboard-layout';
+import { connect } from 'react-redux'
+import {getUserActions} from '../redux/users/actions'
+import { useEffect, useState } from 'react';
+
+const Account = (props) => {
+
+  const {getUserActions} = props;
+
+  const getUserList = async () => {
+   const response = await getUserActions();
+   return response.data;
+  }
+
+  useEffect(
+    () => {
+      getUserList();
+  }, [])
+
+ return (
   <>
     <Head>
       <title>
@@ -42,14 +62,33 @@ const Account = () => (
             lg={8}
             md={6}
             xs={12}
+            padding={1}
+           
+           
           >
-            <AccountProfileDetails />
+            
+            <SwimmerProfileDetails />
+
+            <Grid
+            item
+            lg={12}
+            md={12}
+            xs={12}
+            paddingTop={2}
+           
+          >
+            <SwimmingDataForm />
+            </Grid>
           </Grid>
+
+         
+
         </Grid>
       </Container>
     </Box>
   </>
 );
+    }
 
 Account.getLayout = (page) => (
   <DashboardLayout>
@@ -57,4 +96,5 @@ Account.getLayout = (page) => (
   </DashboardLayout>
 );
 
-export default Account;
+export default connect( null, {getUserActions})(Account);
+

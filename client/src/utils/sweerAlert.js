@@ -11,6 +11,17 @@ export const successAlertMesssage = () => {
       })    
 };
 
+export const successGeneralMesssage = () => {
+  return Swal.fire({
+      position: 'top-end',
+      icon: 'success',
+      title: 'Operation Successful',
+      showConfirmButton: false,
+      timer: 1500
+    })    
+};
+
+
 export const errorMessageAlertMessage = (message) => {
     return Swal.fire({
         icon: 'error',

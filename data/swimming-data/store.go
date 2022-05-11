@@ -19,6 +19,7 @@ type Store struct {
 
 func New(db *gorm.DB) *Store {
 	// migrate schema
+	db.AutoMigrate(&users.User{}, &SwimmingData{})
 	return &Store{
 		db: db,
 	}
@@ -26,33 +27,39 @@ func New(db *gorm.DB) *Store {
 
 func (s *Store) AddSwimmingDataToUser(swimmingData *SwimmingData) (*users.User, error) {
 	//check if user is a swimmer
-	var authUsers users.User
-	query := s.db.Preloads("Role").First(authUsers, swimmingData.UserID)
+	result := &users.User{}
 
-	if query.Error != nil {
-		return nil, errors.New("Users not found")
+	swimmingDataEntity := SwimmingData{
+		TotalDistanceCovered: swimmingData.TotalDistanceCovered,
+		StrokeCount:          swimmingData.StrokeCount,
+		HeartRate:            swimmingData.HeartRate,
+		TimeTakenInSeconds:   swimmingData.TimeTakenInSeconds,
+		SwimmingType:         swimmingData.SwimmingType,
+		UserID:               swimmingData.UserID,
 	}
-	if authUsers.Role.Name != "swimmer" {
-		return nil, errors.New("The current users is not registered as a swimmer")
+	if err := s.db.Create(&swimmingDataEntity).Error; err != nil {
+		return nil, err
 	}
-	swimmingDataEntity := []SwimmingData{
-		{TotalDistanceCovered: swimmingData.TotalDistanceCovered,
-			StrokeCount:        swimmingData.StrokeCount,
-			HeartRate:          swimmingData.HeartRate,
-			TimeTakenInSeconds: swimmingData.TimeTakenInSeconds,
-		},
+
+	updatedUser := s.db.Preload("SwimmingData").First(&result, "id =?", swimmingData.UserID).Error
+	if updatedUser != nil {
+		return nil, errors.New("Cant get updated users")
 	}
-	addSwimmingDataQuery := s.db.Model(&authUsers).Association("SwimmingData").Append(swimmingDataEntity)
-	if addSwimmingDataQuery.Error != nil {
-		return nil, errors.New("Cannot create swimmingdata")
-	}
-	return &authUsers, nil
+	return result, nil
 }
 
 func (s *Store) GetUsersSwimmingData(usersId uuid.UUID) (*[]SwimmingData, error) {
 	var result []SwimmingData
-	var authUsers users.User
-	query := s.db.Model(&authUsers).Where("user_id", usersId).Association("SwimmingData").Find(&result)
+	query := s.db.Where("user_id =?", usersId).Find(&result)
+	if query.Error != nil {
+		return nil, errors.New("Cannot create find users with this id")
+	}
+	return &result, nil
+}
+
+func (s *Store) GetUserSwimmingData() (*[]SwimmingData, error) {
+	var result []SwimmingData
+	query := s.db.Preload("User").Find(&result)
 	if query.Error != nil {
 		return nil, errors.New("Cannot create find users with this id")
 	}

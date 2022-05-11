@@ -35,7 +35,6 @@ const Login = (props) => {
     onSubmit: async (values) => {
       try {
         const response = await props.loginAction(values);
-        console.log(response.status);
         successAlertMesssage();
         router.push('/dashboard');
       } catch (error) {
@@ -159,6 +158,5 @@ const Login = (props) => {
 const mapStateToProps = (state) => {
   return state.auth;
 }
-
 
 export default connect(mapStateToProps, {loginAction})(Login);

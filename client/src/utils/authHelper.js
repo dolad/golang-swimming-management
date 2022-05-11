@@ -33,7 +33,7 @@ export const authenticate = (response, next) => {
 };
 // access user info from localstorage
 export const isAuth = () => {
-  if (window !== "undefined") {
+ 
     const cookieChecked = getCookie(TOKEN);
     if (cookieChecked) {
       if (localStorage.getItem(STORAGE_USER)) {
@@ -42,9 +42,10 @@ export const isAuth = () => {
         return false;
       }
     }
-  }
 };
 
+export const ADMIN = "role_club_administrator"
+export const isAdmin =  isAuth()?.role?.name == ADMIN ? true : false;
 
 export const signout = (next) => {
   removeCookie(TOKEN);

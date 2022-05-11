@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	config "swimming-content-management/config"
 	domainErrors "swimming-content-management/domain"
+
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -14,6 +15,11 @@ import (
 
 const (
 	TokenGeneratorError = "Error in creating new User"
+	AdminAuthorized     = "This Route is only accessible by an admin"
+	CoachAuthorized     = "This Route is only accessible by an coach"
+	AdminUser           = "admin"
+	CoachUser           = "coach"
+	ParentUser          = "parent"
 )
 
 // Authenticate interface lists the methods that our authentication service should implement
@@ -21,6 +27,8 @@ type Authenticate interface {
 	Authenticate(reqUser *User, user *User) bool
 	GenerateAccessToken(user *User) (string error)
 	ValidateAccessToken(token string) (string error)
+	CoachRouteValidation(tokenString string) (*User, error)
+	AdminRouteValidation(tokenString string) (*User, error)
 }
 
 type AccessTokenCustomClaim struct {
@@ -36,7 +44,7 @@ func GenerateAccessToken(user *User) (string, error) {
 		panic(err)
 	}
 
-	UserId := user.Id
+	UserId := user.ID
 	KeyType := "access"
 
 	claims := AccessTokenCustomClaim{
@@ -99,4 +107,48 @@ func ValidateAccessToken(tokenString string) (*uuid.UUID, error) {
 	}
 
 	return &claims.UserId, nil
+}
+
+//implement admin guards
+//implement coach quards
+//implement parent guards
+
+func AdminRouteValidation(tokenString string) (*User, error) {
+	userId, err := ValidateAccessToken(tokenString)
+	if err != nil {
+		return nil, errors.New("invalid authentication")
+	}
+	authUser, err := GetUserById(userId)
+	if authUser.Role.Name != AdminUser {
+		return nil, errors.New(AdminAuthorized)
+	}
+	return authUser, nil
+
+}
+
+func CoachRouteValidation(tokenString string) (*User, error) {
+	userId, err := ValidateAccessToken(tokenString)
+	if err != nil {
+		return nil, errors.New("invalid authentication")
+	}
+	authUser, err := GetUserById(userId)
+	if authUser.Role.Name != CoachUser {
+		return nil, errors.New(CoachAuthorized)
+	}
+	return authUser, nil
+
+}
+
+func AdultRouteValidation(tokenString string) (*User, error) {
+
+	userId, err := ValidateAccessToken(tokenString)
+	if err != nil {
+		return nil, errors.New("invalid authentication")
+	}
+	authUser, err := GetUserById(userId)
+	if authUser.Role.Name != CoachUser {
+		return nil, errors.New(CoachAuthorized)
+	}
+	return authUser, nil
+
 }

@@ -11,31 +11,34 @@ import (
 )
 
 type SwimmingData struct {
-	ID                   uint32
+	gorm.Model
 	TotalDistanceCovered uint32
 	StrokeCount          uint32
 	HeartRate            uint32
 	SwimmingType         string
 	TimeTakenInSeconds   uint32
-	UserID               uint32
+	UserId               uuid.UUID
 }
 
 type User struct {
-	Id           uuid.UUID `gorm:"type:uuid;primary_key;" json:"id"`
-	Username     string    `gorm:"size:255;not null;index:unique" json:"username"`
-	Email        string    `gorm:"index:unique; not null" json:"email" `
+	ID           uuid.UUID `gorm:"type:uuid;primary_key;" json:"id"`
+	Username     string    `gorm:"size:255;not null;uniqueIndex" json:"username"`
+	Email        string    `gorm:"uniqueIndex; not null" json:"email" `
 	Password     string    `json:"password" gorm:"not null"`
 	Surname      string    `json:"surname" gorm:"not null"`
 	FirstName    string    `json:"firstname" gorm:"not null"`
 	DateofBirth  time.Time `json:"dateofbirth" gorm:"not null"`
 	PhoneNumber  string    `json:"phonenumber" gorm:"not null"`
 	Address      string    `json:"address" gorm:"not null"`
-	PostCode     string    `json:"postcode gorm:not null"`
+	Country      string    `json:"country" gorm:"not null"`
+	State        string    `json:"state" gorm:"not null"`
+	PostCode     string    `json:"postcode" gorm:"not null"`
 	CreatedAt    time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt    time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 	RoleID       uint32
 	Role         role.Role
-	SwimmingData []SwimmingData `gorm:"references:Id"`
+	SwimmingData []SwimmingData
+	SquadID      uint32
 }
 
 func Hash(password string) (string, error) {

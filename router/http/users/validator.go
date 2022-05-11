@@ -21,9 +21,20 @@ type UserRequestValidator struct {
 	FirstName   string    `json:"firstname" binding:"required" validate:"min=1,max=20"`
 	DateofBirth time.Time `json:"dateofbirth"`
 	PhoneNumber string    `json:"phonenumber" binding:"required" validate:"min=10,max=11"`
+	Country     string    `json:"country" binding:"required" validate:"min=2,max=60"`
+	State       string    `json:"state" binding:"required" validate:"min=2,max=60"`
 	Address     string    `json:"address" binding:"required" validate:"min=5,max=60"`
 	PostCode    string    `json:"postcode" binding:"required" validate:"min=4,max=10"`
 	RoleId      uint32    `json:"role_id" binding:"required" `
+}
+
+type UpdateProfileRequestValidator struct {
+	Surname     string `json:"surname" validate:"min=1,max=20"`
+	FirstName   string `json:"firstname" validate:"min=1,max=20"`
+	PhoneNumber string `json:"phonenumber"  validate:"min=10,max=11"`
+	Address     string `json:"address"  validate:"min=5,max=60"`
+	Country     string `json:"country"  validate:"min=5,max=60"`
+	State       string `json:"state"  validate:"min=5,max=60"`
 }
 
 type UserAuthRequestValidator struct {
@@ -65,7 +76,27 @@ func Bind(c *gin.Context) (*users.User, error) {
 		PhoneNumber: json.PhoneNumber,
 		Address:     json.Address,
 		PostCode:    json.PostCode,
+		Country:     json.Country,
+		State:       json.State,
 		RoleID:      json.RoleId,
+	}
+
+	return newUser, nil
+}
+
+func BindUserProfile(c *gin.Context) (*users.User, error) {
+	var json UpdateProfileRequestValidator
+	if err := c.ShouldBindJSON(&json); err != nil {
+		return nil, err
+	}
+
+	newUser := &users.User{
+		Surname:     json.Surname,
+		FirstName:   json.FirstName,
+		Country:     json.Country,
+		State:       json.State,
+		PhoneNumber: json.PhoneNumber,
+		Address:     json.Address,
 	}
 
 	return newUser, nil

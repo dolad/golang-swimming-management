@@ -5,6 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
+	"log"
 	domainErrors "swimming-content-management/domain"
 	"swimming-content-management/domain/role"
 )
@@ -15,6 +16,7 @@ const (
 	ROLENOTFOUND            = "Role Not found"
 	GettingRole             = "Error in getting default role"
 	UserNameEmailExistError = "User with this email or username already existing"
+	UserNotFound            = "User with this email not found"
 	WrongPassword           = "Password does not match"
 )
 
@@ -30,7 +32,7 @@ type AuthPayload struct {
 // New creates a new Store struct
 func New(db *gorm.DB) *Store {
 	// migrate schema
-	db.AutoMigrate(&User{}, &SwimmingData{})
+	db.AutoMigrate(&User{})
 
 	return &Store{
 		db: db,
@@ -46,7 +48,7 @@ func (s *Store) SignUp(user *User) (*User, error) {
 		return nil, appError
 	}
 
-	defaultRole, err := FindRoleById(s.db, entity.RoleID)
+	defaultRole, err := s.FindRoleById(entity.RoleID)
 	fmt.Println(defaultRole)
 	if defaultRole.Name == "" {
 		return nil, errors.New(err.Error())
@@ -60,7 +62,7 @@ func (s *Store) SignUp(user *User) (*User, error) {
 	}
 
 	//skip the creation of swimming data when creating user
-	if err := tx.Omit("SwimmingData").Create(&entity).Error; err != nil {
+	if err := tx.Create(&entity).Error; err != nil {
 		return nil, errors.New(createError)
 	}
 
@@ -71,6 +73,24 @@ func GetUserByEmail(email string, db *gorm.DB) (*User, error) {
 	var result User
 
 	query := db.Preload("Role").Where("email= ?", email).First(&result)
+	if query.RecordNotFound() {
+		appError := domainErrors.NewAppErrorWithType(domainErrors.NotFound)
+		return nil, appError
+	}
+
+	if err := query.Error; err != nil {
+		appErr := domainErrors.NewAppError(errors.Wrap(err, loginError), domainErrors.RepositoryError)
+		return nil, appErr
+	}
+
+	return &result, nil
+
+}
+
+func GetUserById(userId *uuid.UUID) (*User, error) {
+	var db *gorm.DB
+	var result User
+	query := db.Preload("Role").Where("id= ?", userId).First(&result)
 	if query.RecordNotFound() {
 		appError := domainErrors.NewAppErrorWithType(domainErrors.NotFound)
 		return nil, appError
@@ -102,9 +122,10 @@ func GetUserByUserName(user *User, db *gorm.DB) (*User, error) {
 
 }
 
-func (s *Store) GetUserById(userId uuid.UUID, db *gorm.DB) (*User, error) {
+func (s *Store) GetUserById(userId uuid.UUID) (*User, error) {
 	result := &User{}
-	query := s.db.First(result, userId)
+	fmt.Println((userId))
+	query := s.db.Preload("Role").Where("id= ?", userId).First(&result)
 	if query.RecordNotFound() {
 		appError := domainErrors.NewAppErrorWithType(domainErrors.NotFound)
 		return nil, appError
@@ -123,7 +144,7 @@ func (s *Store) Login(user *User) (*AuthPayload, error) {
 	result, err := GetUserByEmail(user.Email, s.db)
 
 	if err != nil {
-		return nil, errors.New(GettingRole)
+		return nil, errors.New(UserNotFound)
 	}
 	isPasswordMatch := VerifyHash(result.Password, user.Password)
 
@@ -146,9 +167,9 @@ func (s *Store) Login(user *User) (*AuthPayload, error) {
 
 }
 
-func FindRoleById(db *gorm.DB, roleId uint32) (role.Role, error) {
+func (s *Store) FindRoleById(roleId uint32) (role.Role, error) {
 	var result role.Role
-	query := db.Where("id= ?", roleId).First(&result)
+	query := s.db.Where("id= ?", roleId).First(&result)
 
 	if query.RecordNotFound() {
 		return role.Role{}, errors.New(ROLENOTFOUND)
@@ -194,4 +215,39 @@ func (s *Store) UpdateUserRole(roleId uint32) (*User, error) {
 	s.db.Save(user)
 
 	return user, nil
+}
+
+func (s *Store) GetUsers() ([]User, error) {
+	var result []User
+	if err := s.db.Preload("Role").Omit("Password").Find(&result).Error; err != nil {
+		log.Fatalf(err.Error())
+		return nil, errors.New(err.Error())
+	}
+
+	for i, _ := range result {
+		result[i].Password = ""
+	}
+
+	return result, nil
+
+}
+
+func (s *Store) UpdateUserProfile(user *User, userId uuid.UUID) (*User, error) {
+	var result User
+
+	updatePayloadStruct := &User{
+		Country:     user.Country,
+		State:       user.State,
+		Address:     user.Address,
+		FirstName:   user.FirstName,
+		Surname:     user.Surname,
+		PhoneNumber: user.PhoneNumber,
+	}
+	if err := s.db.Model(&result).Where("id= ?", userId).Updates(updatePayloadStruct).Error; err != nil {
+		log.Fatalf(err.Error())
+		return nil, errors.New(err.Error())
+	}
+
+	return &result, nil
+
 }

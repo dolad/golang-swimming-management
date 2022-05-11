@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Box,
   Button,
@@ -9,30 +8,37 @@ import {
   Grid,
   TextField
 } from '@mui/material';
+import { connect } from 'react-redux';
+import {getSwimmerProfileAction, updateSwimmerAction} from "../../redux/users/actions"
+import { useEffect, useState } from 'react';
 
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  }
-];
 
-export const AccountProfileDetails = (props) => {
+
+
+ const SwimmerProfileDetails = (props) => {
+
+  const states = require("../../utils/uk-cities.json")
+
+  const {swimmerProfile, getSwimmerProfileAction, updateSwimmerAction } = props
+
+  const getSwimmerProfile = async () => {
+    const response = await getSwimmerProfileAction();
+    return response.data;
+   }
+   useEffect(
+    () => {
+      getSwimmerProfile();
+  }, [updateSwimmerAction])
+  
+
+
   const [values, setValues] = useState({
-    firstName: 'Katarina',
-    lastName: 'Smith',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'Alabama',
-    country: 'USA'
+    firstname: swimmerProfile?.firstname,
+    surname: swimmerProfile?.surname,
+    address: swimmerProfile?.address,
+    phone: swimmerProfile?.phonenumber,
+    state: swimmerProfile?.state,
+    country: swimmerProfile?.country
   });
 
   const handleChange = (event) => {
@@ -42,11 +48,16 @@ export const AccountProfileDetails = (props) => {
     });
   };
 
+  const handleSubmit = async (event) => {
+     event.preventDefault();
+     updateSwimmerAction(values);
+
+  }
+
   return (
     <form
       autoComplete="off"
       noValidate
-      {...props}
     >
       <Card>
         <CardHeader
@@ -68,10 +79,10 @@ export const AccountProfileDetails = (props) => {
                 fullWidth
                 helperText="Please specify the first name"
                 label="First name"
-                name="firstName"
+                name="firstname"
                 onChange={handleChange}
                 required
-                value={values.firstName}
+                value={values.firstname}
                 variant="outlined"
               />
             </Grid>
@@ -83,10 +94,10 @@ export const AccountProfileDetails = (props) => {
               <TextField
                 fullWidth
                 label="Last name"
-                name="lastName"
+                name="surname"
                 onChange={handleChange}
                 required
-                value={values.lastName}
+                value={values.surname}
                 variant="outlined"
               />
             </Grid>
@@ -97,11 +108,11 @@ export const AccountProfileDetails = (props) => {
             >
               <TextField
                 fullWidth
-                label="Email Address"
-                name="email"
+                label="Address"
+                name="address"
                 onChange={handleChange}
                 required
-                value={values.email}
+                value={values.address}
                 variant="outlined"
               />
             </Grid>
@@ -151,12 +162,12 @@ export const AccountProfileDetails = (props) => {
                 value={values.state}
                 variant="outlined"
               >
-                {states.map((option) => (
+                {states?.map((option) => (
                   <option
-                    key={option.value}
-                    value={option.value}
+                    key={option.id}
+                    value={option.en_name}
                   >
-                    {option.label}
+                    {option.en_name}
                   </option>
                 ))}
               </TextField>
@@ -174,6 +185,7 @@ export const AccountProfileDetails = (props) => {
           <Button
             color="primary"
             variant="contained"
+            onClick={handleSubmit}
           >
             Save details
           </Button>
@@ -182,3 +194,10 @@ export const AccountProfileDetails = (props) => {
     </form>
   );
 };
+
+const mapStateToProps = (state) => {
+  return state.user;
+}
+
+
+ export default connect(mapStateToProps, {getSwimmerProfileAction, updateSwimmerAction})(SwimmerProfileDetails)

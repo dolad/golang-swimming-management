@@ -9,6 +9,7 @@ import (
 type SwimmingDataService interface {
 	AddSwimmingDataToUser(swimmingData *swimming_data.SwimmingData) (*users.User, error)
 	GetUsersSwimmingData(usersId uuid.UUID) (*[]swimming_data.SwimmingData, error)
+	GetUserSwimmingData() (*[]swimming_data.SwimmingData, error)
 }
 
 type Service struct {
@@ -23,6 +24,9 @@ func (svc *Service) GetUsersSwimmingData(usersId uuid.UUID) (*[]swimming_data.Sw
 	return svc.repository.GetUsersSwimmingData(usersId)
 }
 
+func (svc *Service) GetUserSwimmingData() (*[]swimming_data.SwimmingData, error) {
+	return svc.repository.GetUserSwimmingData()
+}
 func NewService(repository SwimmingDataRepository) *Service {
 	return &Service{repository: repository}
 }

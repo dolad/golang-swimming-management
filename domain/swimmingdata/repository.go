@@ -9,4 +9,5 @@ import (
 type SwimmingDataRepository interface {
 	AddSwimmingDataToUser(swimmingData *swimming_data.SwimmingData) (*users.User, error)
 	GetUsersSwimmingData(usersId uuid.UUID) (*[]swimming_data.SwimmingData, error)
+	GetUserSwimmingData() (*[]swimming_data.SwimmingData, error)
 }

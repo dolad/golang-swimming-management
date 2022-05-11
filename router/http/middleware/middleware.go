@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
-	authdomain "swimming-content-management/data/user"
+	authdata "swimming-content-management/data/user"
 )
 
 func MiddlewareValidAccessToken(c *gin.Context) {
@@ -18,10 +18,52 @@ func MiddlewareValidAccessToken(c *gin.Context) {
 		})
 	}
 
-	userId, errr := authdomain.ValidateAccessToken(token)
+	userId, errr := authdata.ValidateAccessToken(token)
 	if errr != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"Message": "invalid token",
+		})
+	}
+	c.Set("UserId", userId)
+	c.Next()
+
+}
+
+func AdminGuard(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+	token, err := extractToken(c)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"Message": err.Error(),
+		})
+	}
+
+	userId, errr := authdata.AdminRouteValidation(token)
+	if errr != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"Message": "This route can only be accessed by an admin",
+		})
+	}
+	c.Set("UserId", userId)
+	c.Next()
+
+}
+
+func CoachesGuard(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+	token, err := extractToken(c)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"Message": err.Error(),
+		})
+	}
+
+	userId, errr := authdata.CoachRouteValidation(token)
+	if errr != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"Message": "This route can only be access by a coach",
 		})
 	}
 	c.Set("UserId", userId)
@@ -35,6 +77,5 @@ func extractToken(c *gin.Context) (string, error) {
 	if len(authHeaderContent) != 2 {
 		return "", errors.New("Token not provided or malformed")
 	}
-
 	return authHeaderContent[1], nil
 }

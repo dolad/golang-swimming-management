@@ -1,16 +1,40 @@
 import Head from 'next/head';
 import { Box, Container, Grid } from '@mui/material';
-import { Budget } from '../components/dashboard/budget';
-import { LatestOrders } from '../components/dashboard/latest-orders';
-import { LatestProducts } from '../components/dashboard/latest-products';
+import { Swimmmer } from '../components/dashboard/swimmer';
+import  LatestSwimmingData  from '../components/dashboard/latest-swimming';
 import { Sales } from '../components/dashboard/sales';
-import { TasksProgress } from '../components/dashboard/tasks-progress';
-import { TotalCustomers } from '../components/dashboard/total-customers';
-import { TotalProfit } from '../components/dashboard/total-profit';
+import { Parents } from '../components/dashboard/tasks-progress';
+import { Coaches } from '../components/dashboard/coaches';
+import { TotalUsers } from '../components/dashboard/total-profit';
 import { TrafficByDevice } from '../components/dashboard/traffic-by-device';
 import { DashboardLayout } from '../components/dashboard-layout';
+import {getUserActions} from '../redux/users/actions';
+import { connect } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { getAllUsersSwimmingData } from '../redux/swimming-data/action';
+import {getSquadsData} from '../redux/squad/action'
+import { isAdmin } from 'src/utils/authHelper';
+import SquadDetails from  "../components/dashboard/squad-detail"
 
-const Dashboard = () => (
+const Dashboard = (props) => {
+  const {user, getUserActions, getAllUsersSwimmingData, getSquadsData } = props;
+  const { usersList: users, swimmers, coaches, parents } = user;
+
+  const init = async () => {
+     await getUserActions();
+     await getAllUsersSwimmingData();
+     await getSquadsData();
+   }
+
+   console.log(isAdmin);
+ 
+   useEffect(
+     () => {
+      init();
+   }, [])
+   
+
+  return(
   <>
     <Head>
       <title>
@@ -29,43 +53,52 @@ const Dashboard = () => (
           container
           spacing={3}
         >
-          <Grid
+          {
+            isAdmin ?  <Grid
             item
             lg={3}
             sm={6}
             xl={3}
             xs={12}
           >
-            <Budget />
-          </Grid>
-          <Grid
+            <Swimmmer value={swimmers?.length} />
+          </Grid> : null
+          }
+         {
+           isAdmin ?  <Grid
+           item
+           xl={3}
+           lg={3}
+           sm={6}
+           xs={12}
+         >
+           <Coaches value={coaches?.length}/>
+         </Grid> : null
+         }
+          {
+             isAdmin ?   <Grid
+             item
+             xl={3}
+             lg={3}
+             sm={6}
+             xs={12}
+           >
+             <Parents value={parents?.length} />
+           </Grid> : null
+          }
+         {
+            isAdmin ? <Grid
             item
             xl={3}
             lg={3}
             sm={6}
             xs={12}
           >
-            <TotalCustomers />
-          </Grid>
-          <Grid
-            item
-            xl={3}
-            lg={3}
-            sm={6}
-            xs={12}
-          >
-            <TasksProgress />
-          </Grid>
-          <Grid
-            item
-            xl={3}
-            lg={3}
-            sm={6}
-            xs={12}
-          >
-            <TotalProfit sx={{ height: '100%' }} />
-          </Grid>
-          <Grid
+            <TotalUsers value={users?.length} sx={{ height: '100%' }} />
+          </Grid> : null
+         }
+          {
+            isAdmin ? null :  <Grid
             item
             lg={8}
             md={12}
@@ -73,8 +106,11 @@ const Dashboard = () => (
             xs={12}
           >
             <Sales />
-          </Grid>
-          <Grid
+          </Grid> 
+          }
+         
+         {
+            isAdmin ? null :  <Grid
             item
             lg={4}
             md={6}
@@ -83,29 +119,31 @@ const Dashboard = () => (
           >
             <TrafficByDevice sx={{ height: '100%' }} />
           </Grid>
+          }
+           
           <Grid
             item
-            lg={4}
-            md={6}
-            xl={3}
+            lg={12}
+            md={12}
+            xl={12}
             xs={12}
           >
-            <LatestProducts sx={{ height: '100%' }} />
+            <LatestSwimmingData />
           </Grid>
           <Grid
             item
-            lg={8}
+            lg={12}
             md={12}
-            xl={9}
+            xl={12}
             xs={12}
           >
-            <LatestOrders />
+             <SquadDetails /> 
           </Grid>
         </Grid>
       </Container>
     </Box>
   </>
-);
+)};
 
 Dashboard.getLayout = (page) => (
   <DashboardLayout>
@@ -113,7 +151,18 @@ Dashboard.getLayout = (page) => (
   </DashboardLayout>
 );
 
-export default Dashboard;
+
+const mapStateToProps = (state) => {
+  console.log(state.users);
+  return {
+    user:state.users,
+    auth:state.auth
+    }
+}
+
+export default connect( mapStateToProps, {getUserActions, getAllUsersSwimmingData, getSquadsData})(Dashboard);
+
+
 
 
 export async function  getStaticProps(context) {

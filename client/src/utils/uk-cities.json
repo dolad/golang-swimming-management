@@ -1,0 +1,348 @@
+ [
+    {
+           "en_name": "Bath",
+        "region_id": 0,
+        "id": 1
+    },
+    {
+            "en_name": "Birmingham",
+        "region_id": 0,
+        "id": 2
+    },
+    {
+               "en_name": "Bradford",
+        "region_id": 0,
+        "id": 3
+    },
+    {
+               "en_name": "Brighton & Hove",
+        "region_id": 0,
+        "id": 4
+    },
+    {
+             "en_name": "Bristol",
+        "region_id": 0,
+        "id": 5
+    },
+    {
+           "en_name": "Cambridge",
+        "region_id": 0,
+        "id": 6
+    },
+    {
+              "en_name": "Canterbury",
+        "region_id": 0,
+        "id": 7
+    },
+    {
+             "en_name": "Carlisle",
+        "region_id": 0,
+        "id": 8
+    },
+    {
+                 "en_name": "Chelmsford",
+        "region_id": 0,
+        "id": 9
+    },
+    {
+            "en_name": "Chester",
+        "region_id": 0,
+        "id": 10
+    },
+    {
+             "en_name": "Chichester",
+        "region_id": 0,
+        "id": 11
+    },
+    {
+            "en_name": "Coventry",
+        "region_id": 0,
+        "id": 12
+    },
+    {
+           "en_name": "Derby",
+        "region_id": 0,
+        "id": 13
+    },
+    {
+            "en_name": "Durham",
+        "region_id": 0,
+        "id": 14
+    },
+    {
+           "en_name": "Ely",
+        "region_id": 0,
+        "id": 15
+    },
+    {
+             "en_name": "Exeter",
+        "region_id": 0,
+        "id": 16
+    },
+    {
+             "en_name": "Gloucester",
+        "region_id": 0,
+        "id": 17
+    },
+    {
+             "en_name": "Hereford",
+        "region_id": 0,
+        "id": 18
+    },
+    {
+                 "en_name": "Kingston upon Hull",
+        "region_id": 0,
+        "id": 19
+    },
+    {
+             "en_name": "Lancaster",
+        "region_id": 0,
+        "id": 20
+    },
+    {
+            "en_name": "Leeds",
+        "region_id": 0,
+        "id": 21
+    },
+    {
+            "en_name": "Leicester",
+        "region_id": 0,
+        "id": 22
+    },
+    {
+              "en_name": "Lichfield",
+        "region_id": 0,
+        "id": 23
+    },
+    {
+           "en_name": "Lincoln",
+        "region_id": 0,
+        "id": 24
+    },
+    {
+            "en_name": "Liverpool",
+        "region_id": 0,
+        "id": 25
+    },
+    {
+            "en_name": "London",
+        "region_id": 0,
+        "id": 0
+    },
+    {
+             "en_name": "Manchester",
+        "region_id": 0,
+        "id": 26
+    },
+    {
+                 "en_name": "Newcastle upon Tyne",
+        "region_id": 0,
+        "id": 27
+    },
+    {
+            "en_name": "Norwich",
+        "region_id": 0,
+        "id": 28
+    },
+    {
+            "en_name": "Nottingham",
+        "region_id": 0,
+        "id": 29
+    },
+    {
+           "en_name": "Oxford",
+        "region_id": 0,
+        "id": 30
+    },
+    {
+             "en_name": "Peterborough",
+        "region_id": 0,
+        "id": 31
+    },
+    {
+             "en_name": "Plymouth",
+        "region_id": 0,
+        "id": 32
+    },
+    {
+             "en_name": "Portsmouth",
+        "region_id": 0,
+        "id": 33
+    },
+    {
+              "en_name": "Preston",
+        "region_id": 0,
+        "id": 34
+    },
+    {
+           "en_name": "Ripon",
+        "region_id": 0,
+        "id": 35
+    },
+    {
+              "en_name": "Salford",
+        "region_id": 0,
+        "id": 36
+    },
+    {
+              "en_name": "Salisbury",
+        "region_id": 0,
+        "id": 37
+    },
+    {
+             "en_name": "Sheffield",
+        "region_id": 0,
+        "id": 38
+    },
+    {
+             "en_name": "Southampton",
+        "region_id": 0,
+        "id": 39
+    },
+    {
+              "en_name": "St Albans",
+        "region_id": 0,
+        "id": 40
+    },
+    {
+         
+        "en_name": "Stoke-on-Trent",
+        "region_id": 0,
+        "id": 41
+    },
+    {
+             "en_name": "Sunderland",
+        "region_id": 0,
+        "id": 42
+    },
+    {
+            "en_name": "Truro",
+        "region_id": 0,
+        "id": 43
+    },
+    {
+               "en_name": "Wakefield",
+        "region_id": 0,
+        "id": 44
+    },
+    {
+            "en_name": "Wells",
+        "region_id": 0,
+        "id": 45
+    },
+    {
+            "en_name": "Westminster",
+        "region_id": 0,
+        "id": 46
+    },
+    {
+             "en_name": "Winchester",
+        "region_id": 0,
+        "id": 47
+    },
+    {
+               "en_name": "Wolverhampton",
+        "region_id": 0,
+        "id": 48
+    },
+    {
+            "en_name": "Worcester",
+        "region_id": 0,
+        "id": 49
+    },
+    {
+           "en_name": "York",
+        "region_id": 0,
+        "id": 50
+    },
+    {
+           "en_name": "Armagh",
+        "region_id": 1,
+        "id": 51
+    },
+    {
+              "en_name": "Belfast",
+        "region_id": 1,
+        "id": 52
+    },
+    {
+             "en_name": "Londonderry",
+        "region_id": 1,
+        "id": 53
+    },
+    {
+            "en_name": "Lisburn",
+        "region_id": 1,
+        "id": 54
+    },
+    {
+           "en_name": "Newry",
+        "region_id": 1,
+        "id": 55
+    },
+    {
+            "en_name": "Aberdeen",
+        "region_id": 2,
+        "id": 56
+    },
+    {
+           "en_name": "Dundee",
+        "region_id": 2,
+        "id": 57
+    },
+    {
+            "en_name": "Edinburgh",
+        "region_id": 2,
+        "id": 58
+    },
+    {
+             "en_name": "Glasgow",
+        "region_id": 2,
+        "id": 59
+    },
+    {
+             "en_name": "Inverness",
+        "region_id": 2,
+        "id": 60
+    },
+    {
+           "en_name": "Perth",
+        "region_id": 2,
+        "id": 61
+    },
+    {
+            "en_name": "Stirling",
+        "region_id": 2,
+        "id": 62
+    },
+    {
+           "en_name": "Bangor",
+        "region_id": 3,
+        "id": 63
+    },
+    {
+            "en_name": "Cardiff",
+        "region_id": 3,
+        "id": 64
+    },
+    {
+            "en_name": "Newport",
+        "region_id": 3,
+        "id": 65
+    },
+    {
+         "en_name": "St. Asaph",
+        "region_id": 3,
+        "id": 66
+    },
+    {
+        "en_name": "St. David's",
+        "region_id": 3,
+        "id": 67
+    },
+    {
+         "en_name": "Swansea",
+        "region_id": 3,
+        "id": 68
+    }
+]
